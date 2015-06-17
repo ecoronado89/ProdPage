@@ -2,23 +2,16 @@ package defaultPackage;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
-
-
-
-
-
-
-
-
-
-
-
+import java.util.concurrent.TimeUnit;
 
 import jxl.Sheet;
 import jxl.read.biff.BiffException;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 //import org.junit.After;
@@ -31,9 +24,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.jayway.restassured.specification.RequestSpecification;
 
 
 @SuppressWarnings("deprecation")
@@ -43,6 +39,8 @@ public class TestingProductPage {
 	EventFiringWebDriver eventFiringWebDriver;
 	String mainWindowHandle;
 	String page;
+	RequestSpecification requestSpecification;
+
 
 	@BeforeTest
 	public void testSetUp(){
@@ -85,24 +83,24 @@ public class TestingProductPage {
 	public void test() throws BiffException, IOException{
 		
 		//String[] pages = {"74891","444444","31179", "83440"};
-		Sheet sheet = HandleInput.readFile();
-		if (sheet != null){
-			int rows = sheet.getRows();
-			for (int i = 0; i < rows; i++) {
-	        	page = sheet.getCell(0,i).getContents();
-	        	driver.get("http://www.llbean.com/llb/shop/"+page);
+	//	Sheet sheet = HandleInput.readFile();
+		//if (sheet != null){
+		//	int rows = sheet.getRows();
+		//	for (int i = 0; i < rows; i++) {
+	      //  	page = sheet.getCell(0,i).getContents();
+	        	driver.get("http://ecwebs01.llbean.com/llb/shop/"+36069);
 	            mainWindowHandle = driver.getWindowHandles().iterator().next();
 	            //valAllSwatches();
 	            
-	            if (isPageAvailable()&&isSoldOut()&&isProductAvailable()&&validateSizeChart()){
+	            if (isPageAvailable()&&isProductAvailable()&&validateSizeChart()&&verifyImage()){
 	            	//isSoldOut();
 	            	System.out.println("Processing page: "+page);
 	            }
-			}
+			//}
 			
-		}else{
-			System.out.println("Sheet of pages is null.");
-		}
+	//	}else{
+		//	System.out.println("Sheet of pages is null.");
+	//	}
 	}
 	
 	private boolean isPageAvailable(){
@@ -292,10 +290,44 @@ public class TestingProductPage {
 			driver.findElement(By.cssSelector(Selector.SCHART));
 			sizeChart = true;
 		} catch(NoSuchElementException n){
-			System.out.println("Page: "+ page + " without Size Chart");
+			System.err.println("Page: "+ page + " without Size Chart");
 		}
 		return sizeChart;
 		
 		}
+	
+	
+	private boolean verifyImage() 
+	{
+		Boolean HImage = false;
+		
+		String heroImage = driver.findElement(By.xpath("id('backImageSjElement4_img')")).getAttribute("src");
+		
+		if(heroImage.contains("img_not_avail"))
+		{
+			System.err.println("Hero image is broken");
+			validateAV();
+		}
+		else
+			System.out.println("Hero image displayed");
+			return HImage;
+	}
+	public void validateAV(){
+		List<WebElement> AVimages = driver.findElements(By.xpath("//*[@id='ppAlternateViews']/div"));
+				
+	
+		 for(int count = 0; count < AVimages.size(); count++)
+		 {
+			 int alt = count+1;
+			 String AV = driver.findElement(By.xpath("//*[@id='ppAlternateViews']/div["+alt+"]/a/img")).getAttribute("src");
+			 if(AV.contains("IMG_not_avail_"))
+			 	 System.err.println("Alternate View "+alt+" is not available");
+			 else 
+				 System.out.println("Alternate View "+alt+" displayed");
+			 
+		 }
+		
+	}
+	
 	}
 
