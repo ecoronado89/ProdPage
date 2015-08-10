@@ -5,40 +5,54 @@ import java.util.List;
 
 import jxl.Sheet;
 import jxl.read.biff.BiffException;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.testng.Reporter;
 import org.testng.annotations.Test;
+
+import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 
 public class TestingProductPage extends Util.Settings {
 
 	@Test
-	public void test() throws BiffException, IOException {
+	public void test() throws BiffException, IOException, FileNotFoundException{
 
+		System.setOut(new PrintStream(new FileOutputStream("C:\\pdp_src\\output.txt")));
+		
 		Sheet sheet = HandleInput.readFile();
 		if (sheet != null) {
 			int rows = sheet.getRows();
 			for (int i = 0; i < rows; i++) {
 				page = sheet.getCell(0, i).getContents();
-				driver.get("http://www.llbean.com/llb/shop/" + page);
-				mainWindowHandle = driver.getWindowHandles().iterator().next();
+				if (page.equalsIgnoreCase("")) {
+					Reporter.log("<br>END OF AUTOMATION");
+					break;
+				} else {
+					driver.get("http://www.llbean.com/llb/shop/" + page);
+					mainWindowHandle = driver.getWindowHandles().iterator()
+							.next();
+					
+					Reporter.log("<br>********* Processing page: " + page
+							+ " *********");
+					
 
-				System.out.println("\n********* Processing page: " + page
-						+ " *********");
+					if (isPageAvailable() == true) {
+						isSoldOut();
+						isProductAvailable();
+						validateSizeChart();
+						validateBreadcrum();
+						verifyImage();
 
-				if (isPageAvailable() == true) {
-					isSoldOut();
-					isProductAvailable();
-					validateSizeChart();
-					validateBreadcrum();
-					verifyImage();
-
+					}
 				}
-
 			}
 
 		} else {
-			System.out.println("Sheet of pages is null.");
+			Reporter.log("Sheet of pages is null.");
 		}
 	}
 
@@ -49,7 +63,7 @@ public class TestingProductPage extends Util.Settings {
 		// looks for Page Not Available image
 		if (driver.getTitle().equalsIgnoreCase(notAvailTitle)) {
 			available = false;
-			System.err.println("Page is Not Available");
+			Reporter.log("<br>Page is Not Available");
 		}
 		return available;
 	}
@@ -58,7 +72,7 @@ public class TestingProductPage extends Util.Settings {
 		Boolean prodAvailable = true;
 		try {
 			driver.findElement(By.cssSelector(Selector.PROD_AVAIL));
-			System.err.println("Product is NOT available;");
+			Reporter.log("<br>Product is NOT available;");
 			prodAvailable = false;
 
 		} catch (NoSuchElementException n) {
@@ -75,7 +89,7 @@ public class TestingProductPage extends Util.Settings {
 			WebElement redPrice = priceCont.findElement(By
 					.cssSelector(Selector.SOLD_OUT));
 			if (redPrice.getText().equalsIgnoreCase("Sold Out")) {
-				System.err.println("Page is Sold Out");
+				Reporter.log("<br>Page is Sold Out");
 				soldOut = false;
 			}
 
@@ -91,57 +105,49 @@ public class TestingProductPage extends Util.Settings {
 			driver.findElement(By.cssSelector(Selector.SCHART));
 			sizeChart = true;
 		} catch (NoSuchElementException n) {
-			System.err.println("Size Chart Not available");
+			Reporter.log("<br>Size Chart Not available");
 		}
 		return sizeChart;
 
 	}
 
 	// Validate if Hero image is displayed
-	private static boolean verifyImage() {
+	private boolean verifyImage() {
 		Boolean HImage = false;
 		try {
 			String heroImage = driver.findElement(
-					By.xpath("//*[@id='backImageSjElement4_img']"))
+					By.xpath("id('backImageSjElement4_img')"))
 					.getAttribute("src");
 
 			try {
 				if (heroImage.contains("img_not_avail")) {
-					System.err.println("Hero image is broken");
+					Reporter.log("<br>Hero image is broken");
 					HImage = true;
 				}
 
-				validateAV();
-			} catch (NullPointerException e) {
-				System.err.print("Source not found");
+				} catch (NullPointerException e) {
+					Reporter.log("<br>Source not found");
 			}
-		} catch (NoSuchElementException n) {
-			System.err.println("Image Not loaded");
-		}
-		return HImage;
-	}
-
-	// Validate if all AV are correct
-	public static void validateAV() {
-		try {
+			
 			List<WebElement> AVimages = driver.findElements(By
-					.xpath("//*[@id='ppAlternateViews']/div"));
+					.xpath("id('ppAlternateViews')/div"));
 
 			for (int count = 0; count < AVimages.size(); count++) {
 				int alt = count + 1;
 				String AV = driver.findElement(
-						By.xpath("//*[@id='ppAlternateViews']/div[" + alt
+						By.xpath("id('ppAlternateViews')/div[" + alt
 								+ "]/a/img")).getAttribute("src");
 				if (AV.contains("IMG_not_avail_"))
-					System.err.println("Alternate View " + alt
+					Reporter.log("<br>Alternate View " + alt
 							+ " is not available");
-
 			}
-		} catch (NullPointerException e) {
-			System.err.print("Product does not contain Alternate views");
+		} catch (NoSuchElementException n) {
+			Reporter.log("<br>Image Not loaded");
 		}
-
+		return HImage;
 	}
+
+	
 
 	private boolean validateBreadcrum() {
 		Boolean breadC = false;
@@ -149,7 +155,7 @@ public class TestingProductPage extends Util.Settings {
 			driver.findElement(By.cssSelector(Selector.BREADC));
 			breadC = true;
 		} catch (NoSuchElementException n) {
-			System.err.println("Breadcrum Not available");
+			Reporter.log("<br>Breadcrumbs Not available");
 		}
 		return breadC;
 
