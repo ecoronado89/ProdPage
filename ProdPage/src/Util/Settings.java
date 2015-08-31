@@ -20,22 +20,18 @@ public class Settings {
 	@BeforeTest
 	public void testSetUp(){
 		
-//		Chrome Driver
+		//Sets up the Chrome driver
 		System.setProperty("webdriver.chrome.driver", "C:/Program Files (x86)/Google/Chrome/Application/chromedriver.exe");
 		driver = new ChromeDriver(DesiredCapabilities.chrome());
-		
-		
-		
 		eventFiringWebDriver = new EventFiringWebDriver (driver);
+		
+		//Deletes all cookies from the browser
         driver.manage().deleteAllCookies();
-        
-             
-        
 	}
 	
 	@AfterTest
 	public void testShutDown(){
-		
+		//After the test, it has to shutdown the driver
 		driver.close();
 	}
 	
