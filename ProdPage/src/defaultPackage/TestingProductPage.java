@@ -122,10 +122,10 @@ public class TestingProductPage extends Util.Settings {
 		return sizeChart;
 
 	}
-
-	// Validates if the hero image is being displayed
+	
+	// Validates if the hero image and the alternate views are being displayed
 	private boolean verifyImage() {
-		Boolean HImage = false;
+		Boolean HImage = true;
 		try {
 			//Obtains the src of the hero image
 			String heroImage = driver.findElement(
@@ -133,18 +133,21 @@ public class TestingProductPage extends Util.Settings {
 					.getAttribute("src");
 
 			try {
+				//If the hero image link is broken
 				if (heroImage.contains("img_not_avail")) {
 					Reporter.log("<br>Hero image is broken");
-					HImage = true;
+					HImage = false;
 				}
-
-				} catch (NullPointerException e) {
-					Reporter.log("<br>Source not found");
+			} catch (NullPointerException e) {
+				Reporter.log("<br>Source not found");
 			}
 			
+			//Obtains the alternate views
 			List<WebElement> AVimages = driver.findElements(By
 					.xpath("id('ppAlternateViews')/div"));
 
+			/* Goes through the list of alternate views, checking if
+			 * any image is not available, then adding it to the reporter */
 			for (int count = 0; count < AVimages.size(); count++) {
 				int alt = count + 1;
 				String AV = driver.findElement(
@@ -160,14 +163,15 @@ public class TestingProductPage extends Util.Settings {
 		return HImage;
 	}
 
-	
-
+	// Validates if the breadcrumbs are present 
 	private boolean validateBreadcrum() {
 		Boolean breadC = false;
 		try {
 			driver.findElement(By.cssSelector(Selector.BREADC));
 			breadC = true;
 		} catch (NoSuchElementException n) {
+			/*If the block goes to the exception, it means that the css selector is not present,
+			* therefore, the breadcrumbs are not present */
 			Reporter.log("<br>Breadcrumbs Not available");
 		}
 		return breadC;

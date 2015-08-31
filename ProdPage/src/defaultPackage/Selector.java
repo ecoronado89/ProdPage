@@ -1,12 +1,15 @@
 package defaultPackage;
 
+/* Class that holds all the Strings required to run the tests
+ * and ease the access to different definitions
+ */
 public final class Selector {
 
 	private Selector() {
 
 	}
 
-	// Selector
+	// Key words
 	public static final String APP = "#alternateProductPage";
 	public static final String NAME = "[itemprop=name]";
 	public static final String ORDOPTCONT = "#data_0";
