@@ -8,7 +8,9 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.StyledDocument;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JTextPane;
@@ -34,9 +36,10 @@ public class FirstScreen extends JFrame implements Runnable {
 	private static final long serialVersionUID = 516281090191754013L;
 	private JPanel contentPane;
 	private List<String> pages;
-	private JTextPane pageNumbers;
+	private JTextPane pageNumbersPane;
 	private JLabel label;
 	private JLabel lblSelectedFile;
+	String temp = "";
 
 	@Override
 	public void run() {
@@ -53,26 +56,33 @@ public class FirstScreen extends JFrame implements Runnable {
 	 */
 	public FirstScreen() {
 		
+		//Initializes the list of pages to process
 		pages = new ArrayList<String>();
 		
+		//Sets OS Look and Feel
 		try{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}catch(Exception e){
-			
+			System.out.println("Couldn't set OS look and feel. Cause: "+e);
 		}
+		
+		//Window definition
 		setTitle("Product Pages");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		setResizable(false);
+		
+		//Locates the window in the middle of any screen
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+		
+		//Sets up main panel
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		
-		
+		//Adds the add file button
 		JButton btnAddFile = new JButton("Add File");
 		btnAddFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -83,16 +93,18 @@ public class FirstScreen extends JFrame implements Runnable {
 		btnAddFile.setBounds(323, 13, 97, 25);
 		contentPane.add(btnAddFile);
 		
+		//Adds the Test button
 		JButton btnTest = new JButton("Test");
 		btnTest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//action on click
-				setText();
+				//Set the Product Page numbers
+				setPPNumbers();
 			}
 		});
 		btnTest.setBounds(323, 179, 97, 25);
 		contentPane.add(btnTest);
 		
+		//Adds the cancel button
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -102,11 +114,13 @@ public class FirstScreen extends JFrame implements Runnable {
 		btnCancel.setBounds(323, 217, 97, 25);
 		contentPane.add(btnCancel);
 		
-		pageNumbers = new JTextPane();
-		pageNumbers.setToolTipText("Add Page Numbers");
-		pageNumbers.setBounds(12, 13, 299, 229);
+		//Adds the pane to enter the page numbers
+		pageNumbersPane = new JTextPane();
+		pageNumbersPane.setToolTipText("Add Page Numbers");
+		pageNumbersPane.setBounds(12, 13, 299, 229);
 		
-		JScrollPane scrollPane = new JScrollPane(pageNumbers);
+		//Makes the pageNumbersPane scrollable
+		JScrollPane scrollPane = new JScrollPane(pageNumbersPane);
 		scrollPane.setBounds(12, 13, 299, 229);
 		contentPane.add(scrollPane);
 		
@@ -122,7 +136,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		
 	}
 	
-	private void setText(){
+	private void setPPNumbers(){
 		
 		String text = getTextPaneContent();
 		pages.addAll(Arrays.asList(text.split("\\r?\\n")));
@@ -133,7 +147,7 @@ public class FirstScreen extends JFrame implements Runnable {
 	}
 	
 	private String getTextPaneContent(){
-		String text = pageNumbers.getText();
+		String text = pageNumbersPane.getText();
 		
 		text = text.replaceAll(",","\n");
 		text = text.replaceAll("-","\n");
@@ -154,15 +168,25 @@ public class FirstScreen extends JFrame implements Runnable {
 	}
 	
 	private void processFile(File file){
+		temp = "";
 		try{
 			Stream<String> lines = Files.lines(file.toPath());
 			lblSelectedFile.setVisible(true);
 			label.setVisible(true);
 			label.setText(file.getName().toString());
-			lines.forEach( s -> pages.add(s) );
+			lines.forEach( s -> temp += s + "\n" );
 			lines.close();
 		}catch(IOException e){
 			JOptionPane.showMessageDialog(contentPane, "Couldn't open file", "Error", JOptionPane.ERROR_MESSAGE);
 		}
+		
+		try{
+			 StyledDocument document = (StyledDocument) pageNumbersPane.getDocument();
+		     document.insertString(document.getLength(), temp, null);
+		}catch(BadLocationException e){
+			System.out.println("Couldn't append file, reason: "+ e);
+		}
+		
 	}
+	
 }
