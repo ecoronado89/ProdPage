@@ -21,10 +21,9 @@ public class Settings {
 	public void testSetUp(){
 		
 		//Sets up the Chrome driver
-		System.setProperty("webdriver.chrome.driver", "C:/Program Files (x86)/Google/Chrome/Application/chromedriver.exe");
+		String s = System.setProperty("webdriver.chrome.driver", "C:/Program Files (x86)/Google/Chrome/Application/chromedriver.exe");
 		driver = new ChromeDriver(DesiredCapabilities.chrome());
 		eventFiringWebDriver = new EventFiringWebDriver (driver);
-		
 		//Deletes all cookies from the browser
         driver.manage().deleteAllCookies();
 	}
