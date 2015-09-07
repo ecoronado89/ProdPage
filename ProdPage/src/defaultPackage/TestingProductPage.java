@@ -24,12 +24,14 @@ public class TestingProductPage extends Util.Settings {
 
 		System.setOut(new PrintStream(new FileOutputStream("C:\\pdp_src\\output.txt")));
 		
-		//Sheet sheet = HandleInput.readFile();
+		String url = "http://"+ (production?"www":"ecwebs01") + ".llbean.com/llb/shop/";
+		Reporter.log("<br>**** Processing from: " + url
+				+ " ******");
 		
 		for (String page : productPages){
 			//Gets the web page
-			System.out.println("Processing page: "+page);
-			driver.get("http://www.llbean.com/llb/shop/" + page);
+			//concatenar
+			driver.get(url + page);
 			mainWindowHandle = driver.getWindowHandles().iterator()
 					.next();
 			

@@ -34,6 +34,8 @@ import java.io.IOError;
 import java.io.IOException;
 import java.nio.file.Files;
 import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.SwingConstants;
 
 public class FirstScreen extends JFrame implements Runnable {
 
@@ -41,9 +43,10 @@ public class FirstScreen extends JFrame implements Runnable {
 	private JPanel contentPane;
 	private List<String> pages;
 	private JTextPane pageNumbersPane;
-	private JLabel label;
+	private JLabel lblFileName;
 	private JLabel lblSelectedFile;
-	JButton btnTest;
+	JButton btnTestProd;
+	JButton btnTestStage;
 	String temp = "";
 
 	@Override
@@ -60,6 +63,7 @@ public class FirstScreen extends JFrame implements Runnable {
 	 * Create the frame.
 	 */
 	public FirstScreen() {
+		setFont(new Font("Dialog", Font.PLAIN, 12));
 		
 		//Initializes the list of pages to process
 		pages = new ArrayList<String>();
@@ -72,9 +76,9 @@ public class FirstScreen extends JFrame implements Runnable {
 		}
 		
 		//Window definition
-		setTitle("Product Pages");
+		setTitle("Product Page Testing Tool");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 556, 360);
 		setResizable(false);
 		
 		//Locates the window in the middle of any screen
@@ -88,48 +92,69 @@ public class FirstScreen extends JFrame implements Runnable {
 		contentPane.setLayout(null);
 		
 		//Adds the Test button
-		btnTest = new JButton("Test");
-		btnTest.setEnabled(false);
-		btnTest.addActionListener(new ActionListener() {
+		btnTestProd = new JButton("Production");
+		btnTestProd.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnTestProd.setEnabled(false);
+		btnTestProd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//Set the Product Page numbers
-				setPPNumbers();
+				Util.Settings.production = true;
+				proceed();
 			}
 		});
-		btnTest.setBounds(323, 179, 97, 25);
-		contentPane.add(btnTest);
+		btnTestProd.setBounds(397, 210, 141, 41);
+		contentPane.add(btnTestProd);
+		
+		btnTestStage = new JButton("Stage");
+		btnTestStage.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnTestStage.setEnabled(false);
+		btnTestStage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//Set the Product Page numbers
+				Util.Settings.production = false;
+				proceed();
+			}
+		});
+		btnTestStage.setBounds(397, 156, 141, 41);
+		contentPane.add(btnTestStage);
+		
 		
 		//Adds the add file button
 		JButton btnAddFile = new JButton("Add File");
+		btnAddFile.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnAddFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fileChooser();
 			}
 		});
 		btnAddFile.setToolTipText("Select a txt file to load page numbers");
-		btnAddFile.setBounds(323, 13, 97, 25);
+		btnAddFile.setBounds(397, 13, 141, 41);
 		contentPane.add(btnAddFile);
 		
 		
 		//Adds the cancel button
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
 			}
 		});
-		btnCancel.setBounds(323, 217, 97, 25);
+		btnCancel.setBounds(397, 264, 141, 41);
 		contentPane.add(btnCancel);
 		
 		//Adds the pane to enter the page numbers
 		pageNumbersPane = new JTextPane();
+		pageNumbersPane.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		pageNumbersPane.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				btnTest.setEnabled(true);
+				btnTestProd.setEnabled(true);
+				btnTestStage.setEnabled(true);
 				if(arg0.getKeyCode() == 8 || arg0.getKeyCode() == 127){
 					if(pageNumbersPane.getCaretPosition()==0){
-						btnTest.setEnabled(false);
+						btnTestProd.setEnabled(false);
+						btnTestStage.setEnabled(false);
 					}
 				}
 				
@@ -140,42 +165,61 @@ public class FirstScreen extends JFrame implements Runnable {
 		
 		//Makes the pageNumbersPane scrollable
 		JScrollPane scrollPane = new JScrollPane(pageNumbersPane);
-		scrollPane.setBounds(12, 13, 299, 229);
+		scrollPane.setBounds(12, 13, 349, 292);
 		contentPane.add(scrollPane);
 		
-		label = new JLabel("");
-		label.setBounds(323, 82, 97, 16);
-		label.setVisible(false);
-		contentPane.add(label);
+		lblFileName = new JLabel("");
+		lblFileName.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFileName.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblFileName.setBounds(397, 90, 141, 16);
+		lblFileName.setVisible(false);
+		contentPane.add(lblFileName);
 		
 		lblSelectedFile = new JLabel("Selected File:");
-		lblSelectedFile.setBounds(323, 53, 97, 16);
+		lblSelectedFile.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSelectedFile.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblSelectedFile.setBounds(397, 61, 141, 16);
 		lblSelectedFile.setVisible(false);
 		contentPane.add(lblSelectedFile);
+		
 	}
 	
-	private void setPPNumbers(){
-		
+	private void proceed(){
+		divideAndClean();
+		if(hasValidPageNumbersOnly()){
+			setGlobal();		
+			this.dispose();
+			startTest();
+		}else{
+			wrongInput();
+		}
+	}
+	
+	private void wrongInput(){
+		pages.clear();
+		btnTestProd.setEnabled(false);
+		btnTestStage.setEnabled(false);
+		lblFileName.setVisible(false);
+		lblSelectedFile.setVisible(false);
+		JOptionPane.showMessageDialog(contentPane, 
+				"Valid Page numbers only. \n Page numbers are 5 digits numbers ", 
+				"Wrong input", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	private boolean hasValidPageNumbersOnly(){
+		boolean correct = true;
+		for(String page : pages){
+			correct = (page.matches("[0-9]+")&& page.length()==5 )?true:false;
+		}
+		return correct;
+	}
+	
+	private void divideAndClean(){
 		String text = getTextPaneContent();
+		//Adds all the lines, removing the ones containing \n (new line) 
 		pages.addAll(Arrays.asList(text.split("\\r?\\n")));
-		
+		//Removes all blank lines in the text field
 		pages.removeIf((s)->s.length()==0);
-		
-		setGlobal();		
-		this.dispose();
-		startTest();
-	}
-	
-	private void startTest(){
-		TestListenerAdapter tla = new TestListenerAdapter();
-		TestNG testng = new TestNG();
-		testng.setTestClasses(new Class[] { TestingProductPage.class });
-		testng.addListener(tla);
-		testng.run();
-	}
-	
-	private void setGlobal(){
-		Util.Settings.productPages = pages;
 	}
 	
 	private String getTextPaneContent(){
@@ -186,6 +230,18 @@ public class FirstScreen extends JFrame implements Runnable {
 		return text;
 	}
 	
+	private void setGlobal(){
+		Util.Settings.productPages = pages;
+	}
+	
+	private void startTest(){
+		TestListenerAdapter tla = new TestListenerAdapter();
+		TestNG testng = new TestNG();
+		testng.setTestClasses(new Class[] { TestingProductPage.class });
+		testng.addListener(tla);
+		testng.run();
+	}
+	
 	private void fileChooser(){
 		final JFileChooser fileChooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt", "text");
@@ -194,7 +250,8 @@ public class FirstScreen extends JFrame implements Runnable {
 		
 		int result = fileChooser.showOpenDialog(contentPane);
 		if(result == JFileChooser.APPROVE_OPTION){
-			btnTest.setEnabled(true);
+			btnTestProd.setEnabled(true);
+			btnTestStage.setEnabled(true);
 			File selectedFile = fileChooser.getSelectedFile();
 			processFile(selectedFile);
 		}
@@ -204,12 +261,12 @@ public class FirstScreen extends JFrame implements Runnable {
 		try{
 			Stream<String> lines = Files.lines(file.toPath());
 			lblSelectedFile.setVisible(true);
-			label.setVisible(true);
-			label.setText(file.getName().toString());
+			lblFileName.setVisible(true);
+			lblFileName.setText(file.getName().toString());
 			lines.forEach( s -> temp += s + "\n" );
 			lines.close();
 		}catch(IOException e){
-			JOptionPane.showMessageDialog(contentPane, "Couldn't open file", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(contentPane, "Couldn't open file", "Error "+e, JOptionPane.ERROR_MESSAGE);
 		}
 		
 		try{
@@ -220,5 +277,4 @@ public class FirstScreen extends JFrame implements Runnable {
 		}
 		
 	}
-	
 }

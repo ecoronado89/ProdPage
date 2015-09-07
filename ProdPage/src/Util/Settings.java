@@ -18,6 +18,7 @@ public class Settings {
 	public static String mainWindowHandle;
 	public static String page;
 	public static List<String> productPages;
+	public static boolean production; //false if it's on stage
 
 
 	@BeforeTest
@@ -34,7 +35,6 @@ public class Settings {
 	@AfterTest
 	public void testShutDown(){
 		//After the test, it has to shutdown the driver
-		System.out.println("Shutting down");
 		driver.close();
 	}
 	
