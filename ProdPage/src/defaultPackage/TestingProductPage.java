@@ -35,9 +35,6 @@ public class TestingProductPage extends Util.Settings {
 		
 		for (String pageNumber : productPages){
 			
-			/*JOptionPane.showMessageDialog(null, 
-					"Testing page "+ position + " of "+ total);*/
-			
 			//Gets the web page
 			driver.get(url + pageNumber);
 			mainWindowHandle = driver.getWindowHandles().iterator()
@@ -63,8 +60,9 @@ public class TestingProductPage extends Util.Settings {
 		}
 
 		Reporter.log("<br>END OF AUTOMATION");
+		driver.close();
 		try {
-			Thread.sleep(10000);
+			Thread.sleep(60000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
