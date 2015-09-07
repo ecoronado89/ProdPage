@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -32,6 +33,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOError;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -266,7 +268,7 @@ public class FirstScreen extends JFrame implements Runnable {
 			lines.forEach( s -> temp += s + "\n" );
 			lines.close();
 		}catch(IOException e){
-			JOptionPane.showMessageDialog(contentPane, "Couldn't open file", "Error "+e, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(contentPane, "Couldn't open file. Cause: "+e, "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		
 		try{

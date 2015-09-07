@@ -3,8 +3,7 @@ package defaultPackage;
 import java.io.IOException;
 import java.util.List;
 
-import jxl.Sheet;
-import jxl.read.biff.BiffException;
+import javax.swing.JOptionPane;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -13,29 +12,38 @@ import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 import java.io.FileOutputStream;
+import java.awt.Desktop;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.net.URI;
 
 /* Class where the tests are executed */
 public class TestingProductPage extends Util.Settings {
 
 	@Test
-	public void test() throws BiffException, IOException, FileNotFoundException{
+	public void test() throws IOException, FileNotFoundException{
 
-		System.setOut(new PrintStream(new FileOutputStream("C:\\pdp_src\\output.txt")));
+		System.setOut(new PrintStream(new FileOutputStream(System.getProperty("user.dir")+"\\extra-files\\output.txt")));
 		
 		String url = "http://"+ (production?"www":"ecwebs01") + ".llbean.com/llb/shop/";
 		Reporter.log("<br>**** Processing from: " + url
 				+ " ******");
 		
-		for (String page : productPages){
+		int total = productPages.size();
+		int position = 1;
+		
+		for (String pageNumber : productPages){
+			
+			/*JOptionPane.showMessageDialog(null, 
+					"Testing page "+ position + " of "+ total);*/
+			
 			//Gets the web page
-			//concatenar
-			driver.get(url + page);
+			driver.get(url + pageNumber);
 			mainWindowHandle = driver.getWindowHandles().iterator()
 					.next();
 			
-			Reporter.log("<br>********* Processing page: " + page
+			Reporter.log("<br>********* Processing page: " + pageNumber
 					+ " *********");
 			
 			//Validates the page
@@ -47,14 +55,31 @@ public class TestingProductPage extends Util.Settings {
 				validateBreadcrum();
 				verifyImage();
 				
-				Reporter.log("<br>********* Page: " + page
+				Reporter.log("<br>********* Page: " + pageNumber
 						+ " processed *****");
 			}
+			++position;
 			
 		}
 
 		Reporter.log("<br>END OF AUTOMATION");
-		driver.close();
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		showResults();
+	}
+	
+	private void showResults(){
+		String url = System.getProperty("user.dir")+"/test-output/index.html";
+	    File htmlFile = new File(url);
+	    try{
+	    	Desktop.getDesktop().browse(htmlFile.toURI());
+	    }catch(IOException e){
+	    	System.err.println(e.getMessage());
+	    }
 	}
 
 	private boolean isPageAvailable() {

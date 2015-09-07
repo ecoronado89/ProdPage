@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.testng.annotations.AfterTest;
@@ -25,11 +26,13 @@ public class Settings {
 	public void testSetUp(){
 		
 		//Sets up the Chrome driver
-		String s = System.setProperty("webdriver.chrome.driver", "C:/Users/anunez/AppData/Local/Google/Chrome/Application/chromedriver.exe");
+		String s = System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"\\extra-files\\chromedriver.exe");
+		
 		driver = new ChromeDriver(DesiredCapabilities.chrome());
 		eventFiringWebDriver = new EventFiringWebDriver (driver);
 		//Deletes all cookies from the browser
         driver.manage().deleteAllCookies();
+        
 	}
 	
 	@AfterTest
