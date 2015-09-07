@@ -11,6 +11,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.StyledDocument;
+
+import org.testng.TestListenerAdapter;
+import org.testng.TestNG;
+
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JTextPane;
@@ -39,6 +43,7 @@ public class FirstScreen extends JFrame implements Runnable {
 	private JTextPane pageNumbersPane;
 	private JLabel label;
 	private JLabel lblSelectedFile;
+	JButton btnTest;
 	String temp = "";
 
 	@Override
@@ -82,6 +87,18 @@ public class FirstScreen extends JFrame implements Runnable {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		//Adds the Test button
+		btnTest = new JButton("Test");
+		btnTest.setEnabled(false);
+		btnTest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//Set the Product Page numbers
+				setPPNumbers();
+			}
+		});
+		btnTest.setBounds(323, 179, 97, 25);
+		contentPane.add(btnTest);
+		
 		//Adds the add file button
 		JButton btnAddFile = new JButton("Add File");
 		btnAddFile.addActionListener(new ActionListener() {
@@ -93,16 +110,6 @@ public class FirstScreen extends JFrame implements Runnable {
 		btnAddFile.setBounds(323, 13, 97, 25);
 		contentPane.add(btnAddFile);
 		
-		//Adds the Test button
-		JButton btnTest = new JButton("Test");
-		btnTest.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//Set the Product Page numbers
-				setPPNumbers();
-			}
-		});
-		btnTest.setBounds(323, 179, 97, 25);
-		contentPane.add(btnTest);
 		
 		//Adds the cancel button
 		JButton btnCancel = new JButton("Cancel");
@@ -116,6 +123,18 @@ public class FirstScreen extends JFrame implements Runnable {
 		
 		//Adds the pane to enter the page numbers
 		pageNumbersPane = new JTextPane();
+		pageNumbersPane.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				btnTest.setEnabled(true);
+				if(arg0.getKeyCode() == 8 || arg0.getKeyCode() == 127){
+					if(pageNumbersPane.getCaretPosition()==0){
+						btnTest.setEnabled(false);
+					}
+				}
+				
+			}
+		});
 		pageNumbersPane.setToolTipText("Add Page Numbers");
 		pageNumbersPane.setBounds(12, 13, 299, 229);
 		
@@ -133,7 +152,6 @@ public class FirstScreen extends JFrame implements Runnable {
 		lblSelectedFile.setBounds(323, 53, 97, 16);
 		lblSelectedFile.setVisible(false);
 		contentPane.add(lblSelectedFile);
-		
 	}
 	
 	private void setPPNumbers(){
@@ -143,7 +161,21 @@ public class FirstScreen extends JFrame implements Runnable {
 		
 		pages.removeIf((s)->s.length()==0);
 		
-		pages.forEach(s -> System.out.println(s));
+		setGlobal();		
+		this.dispose();
+		startTest();
+	}
+	
+	private void startTest(){
+		TestListenerAdapter tla = new TestListenerAdapter();
+		TestNG testng = new TestNG();
+		testng.setTestClasses(new Class[] { TestingProductPage.class });
+		testng.addListener(tla);
+		testng.run();
+	}
+	
+	private void setGlobal(){
+		Util.Settings.productPages = pages;
 	}
 	
 	private String getTextPaneContent(){
@@ -162,13 +194,13 @@ public class FirstScreen extends JFrame implements Runnable {
 		
 		int result = fileChooser.showOpenDialog(contentPane);
 		if(result == JFileChooser.APPROVE_OPTION){
+			btnTest.setEnabled(true);
 			File selectedFile = fileChooser.getSelectedFile();
 			processFile(selectedFile);
 		}
 	}
 	
 	private void processFile(File file){
-		temp = "";
 		try{
 			Stream<String> lines = Files.lines(file.toPath());
 			lblSelectedFile.setVisible(true);

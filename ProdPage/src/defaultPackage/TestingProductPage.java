@@ -24,40 +24,35 @@ public class TestingProductPage extends Util.Settings {
 
 		System.setOut(new PrintStream(new FileOutputStream("C:\\pdp_src\\output.txt")));
 		
-		Sheet sheet = HandleInput.readFile();
+		//Sheet sheet = HandleInput.readFile();
 		
-		//Validates if there's a sheet
-		if (sheet != null) {
-			int rows = sheet.getRows();
-			for (int i = 0; i < rows; i++) {
-				//Gets the first product page
-				page = sheet.getCell(0, i).getContents();
-				if (page.equalsIgnoreCase("")) {
-					Reporter.log("<br>END OF AUTOMATION");
-					break;
-				} else {
-					//Gets the web page
-					driver.get("http://www.llbean.com/llb/shop/" + page);
-					mainWindowHandle = driver.getWindowHandles().iterator()
-							.next();
-					
-					Reporter.log("<br>********* Processing page: " + page
-							+ " *********");
-					
-					//Validates the page
-					if (isPageAvailable() == true) {
-						isSoldOut();
-						isProductAvailable();
-						validateSizeChart();
-						validateBreadcrum();
-						verifyImage();
-					}
-				}
+		for (String page : productPages){
+			//Gets the web page
+			System.out.println("Processing page: "+page);
+			driver.get("http://www.llbean.com/llb/shop/" + page);
+			mainWindowHandle = driver.getWindowHandles().iterator()
+					.next();
+			
+			Reporter.log("<br>********* Processing page: " + page
+					+ " *********");
+			
+			//Validates the page
+			if (isPageAvailable() == true) {
+				
+				inStock();
+				isProductAvailable();
+				validateSizeChart();
+				validateBreadcrum();
+				verifyImage();
+				
+				Reporter.log("<br>********* Page: " + page
+						+ " processed *****");
 			}
-
-		} else {
-			Reporter.log("Sheet of pages is null.");
+			
 		}
+
+		Reporter.log("<br>END OF AUTOMATION");
+		driver.close();
 	}
 
 	private boolean isPageAvailable() {
@@ -87,8 +82,8 @@ public class TestingProductPage extends Util.Settings {
 		return prodAvailable;
 	}
 
-	private boolean isSoldOut() {
-		Boolean soldOut = true;
+	private boolean inStock() {
+		Boolean inStock = true;
 		try {
 			//Gets the PriceContainer
 			WebElement priceCont = driver.findElement(By
@@ -99,13 +94,13 @@ public class TestingProductPage extends Util.Settings {
 			//Validates if the css selector is present because the product is sold out
 			if (redPrice.getText().equalsIgnoreCase("Sold Out")) {
 				Reporter.log("<br>Page is Sold Out");
-				soldOut = false;
+				inStock = false;
 			}
 		} catch (NoSuchElementException n) {
 			/*If the block goes to the exception, it means that the css selector is not present,
 			* therefore, the product is not sold out */
 		}
-		return soldOut;
+		return inStock;
 	}
 
 	//Validates if the size chart is present
