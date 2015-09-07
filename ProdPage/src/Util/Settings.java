@@ -2,6 +2,9 @@ package Util;
 
 
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
@@ -9,6 +12,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
@@ -35,10 +39,21 @@ public class Settings {
         
 	}
 	
-	@AfterTest
+	@AfterMethod
 	public void testShutDown(){
 		//After the test, it has to shutdown the driver
+		System.out.println("Closing");
+		
 		driver.close();
+		
+		String url = System.getProperty("user.dir")+"/test-output/index.html";
+	    File htmlFile = new File(url);
+	    try{
+	    	Desktop.getDesktop().browse(htmlFile.toURI());
+	    }catch(IOException e){
+	    	System.err.println(e.getMessage());
+	    }
+	    
 	}
 	
 

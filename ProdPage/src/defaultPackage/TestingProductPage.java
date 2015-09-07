@@ -60,24 +60,18 @@ public class TestingProductPage extends Util.Settings {
 		}
 
 		Reporter.log("<br>END OF AUTOMATION");
-		driver.close();
+		/*driver.close();
 		try {
 			Thread.sleep(60000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		showResults();
 	}
 	
 	private void showResults(){
-		String url = System.getProperty("user.dir")+"/test-output/index.html";
-	    File htmlFile = new File(url);
-	    try{
-	    	Desktop.getDesktop().browse(htmlFile.toURI());
-	    }catch(IOException e){
-	    	System.err.println(e.getMessage());
-	    }
+		
 	}
 
 	private boolean isPageAvailable() {

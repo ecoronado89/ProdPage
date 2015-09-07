@@ -1,7 +1,7 @@
+Closing
 
 ===============================================
 Command line suite
 Total tests run: 1, Failures: 0, Skips: 0
-Configuration Failures: 1, Skips: 0
 ===============================================
 
