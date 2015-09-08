@@ -9,7 +9,6 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import javax.swing.text.StyledDocument;
 
 import org.testng.TestListenerAdapter;
@@ -21,19 +20,15 @@ import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.IOError;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -50,6 +45,7 @@ public class FirstScreen extends JFrame implements Runnable {
 	JButton btnTestProd;
 	JButton btnTestStage;
 	String temp = "";
+	private JLabel lblPages;
 
 	@Override
 	public void run() {
@@ -80,7 +76,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		//Window definition
 		setTitle("Product Page Testing Tool");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 556, 360);
+		setBounds(100, 100, 556, 377);
 		setResizable(false);
 		
 		//Locates the window in the middle of any screen
@@ -93,7 +89,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		//Adds the Test button
+		//Adds the Production button
 		btnTestProd = new JButton("Production");
 		btnTestProd.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnTestProd.setEnabled(false);
@@ -104,9 +100,10 @@ public class FirstScreen extends JFrame implements Runnable {
 				proceed();
 			}
 		});
-		btnTestProd.setBounds(397, 210, 141, 41);
+		btnTestProd.setBounds(397, 225, 141, 41);
 		contentPane.add(btnTestProd);
 		
+		//Adds the Stage button		
 		btnTestStage = new JButton("Stage");
 		btnTestStage.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnTestStage.setEnabled(false);
@@ -117,7 +114,7 @@ public class FirstScreen extends JFrame implements Runnable {
 				proceed();
 			}
 		});
-		btnTestStage.setBounds(397, 156, 141, 41);
+		btnTestStage.setBounds(397, 171, 141, 41);
 		contentPane.add(btnTestStage);
 		
 		
@@ -142,7 +139,7 @@ public class FirstScreen extends JFrame implements Runnable {
 				System.exit(0);
 			}
 		});
-		btnCancel.setBounds(397, 264, 141, 41);
+		btnCancel.setBounds(397, 276, 141, 41);
 		contentPane.add(btnCancel);
 		
 		//Adds the pane to enter the page numbers
@@ -153,6 +150,7 @@ public class FirstScreen extends JFrame implements Runnable {
 			public void keyPressed(KeyEvent arg0) {
 				btnTestProd.setEnabled(true);
 				btnTestStage.setEnabled(true);
+				//If backspace or supreme is selected and the text field is empty, disables the buttons.
 				if(arg0.getKeyCode() == 8 || arg0.getKeyCode() == 127){
 					if(pageNumbersPane.getCaretPosition()==0){
 						btnTestProd.setEnabled(false);
@@ -167,9 +165,10 @@ public class FirstScreen extends JFrame implements Runnable {
 		
 		//Makes the pageNumbersPane scrollable
 		JScrollPane scrollPane = new JScrollPane(pageNumbersPane);
-		scrollPane.setBounds(12, 13, 349, 292);
+		scrollPane.setBounds(22, 42, 337, 275);
 		contentPane.add(scrollPane);
 		
+		//Adds the label to display the selected file name
 		lblFileName = new JLabel("");
 		lblFileName.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFileName.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -184,6 +183,11 @@ public class FirstScreen extends JFrame implements Runnable {
 		lblSelectedFile.setVisible(false);
 		contentPane.add(lblSelectedFile);
 		
+		lblPages = new JLabel("Pages:");
+		lblPages.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblPages.setBounds(22, 13, 56, 26);
+		contentPane.add(lblPages);
+		
 	}
 	
 	private void proceed(){
@@ -196,7 +200,9 @@ public class FirstScreen extends JFrame implements Runnable {
 			wrongInput();
 		}
 	}
-	
+
+	/*If the user typed words or something other than numbers and dividers(\n,',',-)
+	  it should display an error message */
 	private void wrongInput(){
 		pages.clear();
 		btnTestProd.setEnabled(false);
@@ -208,6 +214,7 @@ public class FirstScreen extends JFrame implements Runnable {
 				"Wrong input", JOptionPane.ERROR_MESSAGE);
 	}
 	
+	//Checks if the user entered numbers only and if the page numbers length is correct.
 	private boolean hasValidPageNumbersOnly(){
 		boolean correct = true;
 		for(String page : pages){
@@ -216,6 +223,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		return correct;
 	}
 	
+	//Divide the entered text in the panel into an array
 	private void divideAndClean(){
 		String text = getTextPaneContent();
 		//Adds all the lines, removing the ones containing \n (new line) 
@@ -224,6 +232,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		pages.removeIf((s)->s.length()==0);
 	}
 	
+	//Gets the content of the panel
 	private String getTextPaneContent(){
 		String text = pageNumbersPane.getText();
 		
@@ -244,22 +253,24 @@ public class FirstScreen extends JFrame implements Runnable {
 		testng.run();
 	}
 	
+	//Opens the fileChooser displaying only files with .txt extension.
 	private void fileChooser(){
 		final JFileChooser fileChooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt", "text");
 		fileChooser.setFileFilter(filter);
-		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 		
 		int result = fileChooser.showOpenDialog(contentPane);
 		if(result == JFileChooser.APPROVE_OPTION){
 			btnTestProd.setEnabled(true);
 			btnTestStage.setEnabled(true);
 			File selectedFile = fileChooser.getSelectedFile();
-			processFile(selectedFile);
+			addFileToPane(selectedFile);
 		}
 	}
 	
-	private void processFile(File file){
+	//Adds the selected file to the pane
+	private void addFileToPane(File file){
 		try{
 			Stream<String> lines = Files.lines(file.toPath());
 			lblSelectedFile.setVisible(true);

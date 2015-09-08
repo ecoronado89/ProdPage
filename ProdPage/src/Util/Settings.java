@@ -9,11 +9,9 @@ import java.util.List;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
 public class Settings {
@@ -30,7 +28,7 @@ public class Settings {
 	public void testSetUp(){
 		
 		//Sets up the Chrome driver
-		String s = System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"\\extra-files\\chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"\\extra-files\\chromedriver.exe");
 		
 		driver = new ChromeDriver(DesiredCapabilities.chrome());
 		eventFiringWebDriver = new EventFiringWebDriver (driver);
@@ -41,17 +39,16 @@ public class Settings {
 	
 	@AfterMethod
 	public void testShutDown(){
-		//After the test, it has to shutdown the driver
-		System.out.println("Closing");
 		
+		//After the test, it has to shutdown the driver
 		driver.close();
 		
-		String url = System.getProperty("user.dir")+"/test-output/index.html";
-	    File htmlFile = new File(url);
+		String url = System.getProperty("user.dir")+"/test-output";
+	    File file = new File(url);
+	    
 	    try{
-	    	Desktop.getDesktop().browse(htmlFile.toURI());
+	    	Desktop.getDesktop().open(file);
 	    }catch(IOException e){
-	    	System.err.println(e.getMessage());
 	    }
 	    
 	}

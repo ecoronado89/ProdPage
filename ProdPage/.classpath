@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_51/lib/external/jxl-2.6.3.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_51/lib/external/selenium-java-2.41.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_51/lib/external/selenium-server-standalone-2.41.0.jar"/>
 	<classpathentry kind="output" path="bin"/>

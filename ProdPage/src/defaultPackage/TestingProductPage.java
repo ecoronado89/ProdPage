@@ -3,8 +3,6 @@ package defaultPackage;
 import java.io.IOException;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -12,26 +10,21 @@ import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 import java.io.FileOutputStream;
-import java.awt.Desktop;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.net.URI;
 
 /* Class where the tests are executed */
 public class TestingProductPage extends Util.Settings {
-
+	
 	@Test
 	public void test() throws IOException, FileNotFoundException{
 
 		System.setOut(new PrintStream(new FileOutputStream(System.getProperty("user.dir")+"\\extra-files\\output.txt")));
 		
 		String url = "http://"+ (production?"www":"ecwebs01") + ".llbean.com/llb/shop/";
-		Reporter.log("<br>**** Processing from: " + url
-				+ " ******");
 		
-		int total = productPages.size();
-		int position = 1;
+		Reporter.log("<br><b>Processing from: " + url + " </b><br>");
+		
 		
 		for (String pageNumber : productPages){
 			
@@ -53,27 +46,14 @@ public class TestingProductPage extends Util.Settings {
 				verifyImage();
 				
 				Reporter.log("<br>********* Page: " + pageNumber
-						+ " processed *****");
+						+ " completed *****");
 			}
-			++position;
 			
 		}
 
-		Reporter.log("<br>END OF AUTOMATION");
-		/*driver.close();
-		try {
-			Thread.sleep(60000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		showResults();
+		Reporter.log("<br><br>END OF AUTOMATION");
 	}
 	
-	private void showResults(){
-		
-	}
-
 	private boolean isPageAvailable() {
 		Boolean available = true;
 		String notAvailTitle = "L.L.Bean: Page Not Available";
@@ -81,7 +61,7 @@ public class TestingProductPage extends Util.Settings {
 		// looks if the page number is showing the Page Not Available title
 		if (driver.getTitle().equalsIgnoreCase(notAvailTitle)) {
 			available = false;
-			Reporter.log("<br>Page is Not Available");
+			Reporter.log("<p style=\"color:red\"> Page is Not Available</p>");
 		}
 		return available;
 	}
@@ -91,7 +71,7 @@ public class TestingProductPage extends Util.Settings {
 		try {
 			//Validates if there's a css selector with tag .ppItemUnavailable
 			driver.findElement(By.cssSelector(Selector.PROD_AVAIL));
-			Reporter.log("<br>Product is NOT available;");
+			Reporter.log("<p style=\"color:red\">Product is not available</p>");
 			prodAvailable = false;
 
 		} catch (NoSuchElementException n) {
@@ -112,7 +92,7 @@ public class TestingProductPage extends Util.Settings {
 					.cssSelector(Selector.SOLD_OUT));
 			//Validates if the css selector is present because the product is sold out
 			if (redPrice.getText().equalsIgnoreCase("Sold Out")) {
-				Reporter.log("<br>Page is Sold Out");
+				Reporter.log("<p style=\"color:red\">Product is Sold Out</p>");
 				inStock = false;
 			}
 		} catch (NoSuchElementException n) {
@@ -131,7 +111,7 @@ public class TestingProductPage extends Util.Settings {
 		} catch (NoSuchElementException n) {
 			/*If the block goes to the exception, it means that the css selector is not present,
 			* therefore, the size chart is not present */
-			Reporter.log("<br>Size Chart Not available");
+			Reporter.log("<p style=\"color:red\">Size Chart not available</p>");
 		}
 		return sizeChart;
 
@@ -149,11 +129,11 @@ public class TestingProductPage extends Util.Settings {
 			try {
 				//If the hero image link is broken
 				if (heroImage.contains("img_not_avail")) {
-					Reporter.log("<br>Hero image is broken");
+					Reporter.log("<p style=\"color:red\">Hero image is broken</p>");
 					HImage = false;
 				}
 			} catch (NullPointerException e) {
-				Reporter.log("<br>Source not found");
+				Reporter.log("<p style=\"color:red\">Source not found</p>");
 			}
 			
 			//Obtains the alternate views
@@ -168,11 +148,11 @@ public class TestingProductPage extends Util.Settings {
 						By.xpath("id('ppAlternateViews')/div[" + alt
 								+ "]/a/img")).getAttribute("src");
 				if (AV.contains("IMG_not_avail_"))
-					Reporter.log("<br>Alternate View " + alt
-							+ " is not available");
+					Reporter.log("<p style=\"color:red\">Alternate View " + alt
+							+ " is not available</p>");
 			}
 		} catch (NoSuchElementException n) {
-			Reporter.log("<br>Image Not loaded");
+			Reporter.log("<p style=\"color:red\">Image Not loaded</p>");
 		}
 		return HImage;
 	}
@@ -186,7 +166,7 @@ public class TestingProductPage extends Util.Settings {
 		} catch (NoSuchElementException n) {
 			/*If the block goes to the exception, it means that the css selector is not present,
 			* therefore, the breadcrumbs are not present */
-			Reporter.log("<br>Breadcrumbs Not available");
+			Reporter.log("<p style=\"color:red\">Breadcrumbs Not available</p>");
 		}
 		return breadC;
 
