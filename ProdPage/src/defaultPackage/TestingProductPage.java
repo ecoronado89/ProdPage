@@ -44,6 +44,7 @@ public class TestingProductPage extends Util.Settings {
 				validateSizeChart();
 				validateBreadcrum();
 				verifyImage();
+				verifyCopy();
 				
 				Reporter.log("<br>********* Page: " + pageNumber
 						+ " completed *****");
@@ -155,6 +156,19 @@ public class TestingProductPage extends Util.Settings {
 			Reporter.log("<p style=\"color:red\">Image Not loaded</p>");
 		}
 		return HImage;
+	}
+	
+	private boolean verifyCopy(){
+		Boolean hasCopy = false;
+		try {
+			driver.findElement(By.cssSelector(Selector.SCHART));
+			hasCopy = true;
+		} catch (NoSuchElementException n) {
+			/*If the block goes to the exception, it means that the css selector is not present,
+			* therefore, the size chart is not present */
+			Reporter.log("<p style=\"color:red\">Size Chart not available</p>");
+		}
+		return hasCopy;
 	}
 
 	// Validates if the breadcrumbs are present 

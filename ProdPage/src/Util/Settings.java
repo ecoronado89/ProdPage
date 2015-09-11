@@ -12,6 +12,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
 public class Settings {
@@ -22,7 +24,6 @@ public class Settings {
 	public static String page;
 	public static List<String> productPages;
 	public static boolean production; //false if it's on stage
-
 
 	@BeforeTest
 	public void testSetUp(){
