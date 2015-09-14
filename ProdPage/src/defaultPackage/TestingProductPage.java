@@ -1,11 +1,13 @@
 package defaultPackage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
@@ -18,16 +20,16 @@ public class TestingProductPage extends Util.Settings {
 	
 	@Test
 	public void test() throws IOException, FileNotFoundException{
-
-		System.setOut(new PrintStream(new FileOutputStream(System.getProperty("user.dir")+"\\extra-files\\output.txt")));
-		
+		productPages = new ArrayList();
+		productPages.add("55295");
+		//System.setOut(new PrintStream(new FileOutputStream(System.getProperty("user.dir")+"\\extra-files\\output.txt")));
+		System.out.println("Running...");
 		String url = "http://"+ (production?"www":"ecwebs01") + ".llbean.com/llb/shop/";
 		
 		Reporter.log("<br><b>Processing from: " + url + " </b><br>");
-		
+		boolean result = false;
 		
 		for (String pageNumber : productPages){
-			
 			//Gets the web page
 			driver.get(url + pageNumber);
 			mainWindowHandle = driver.getWindowHandles().iterator()
@@ -39,12 +41,11 @@ public class TestingProductPage extends Util.Settings {
 			//Validates the page
 			if (isPageAvailable() == true) {
 				
-				inStock();
-				isProductAvailable();
-				validateSizeChart();
-				validateBreadcrum();
-				verifyImage();
-				verifyCopy();
+				result = result && inStock();
+				result = result && isProductAvailable();
+				result = result && validateSizeChart();
+				result = result && validateBreadcrum();
+				result = result && verifyImage();
 				
 				Reporter.log("<br>********* Page: " + pageNumber
 						+ " completed *****");
@@ -53,6 +54,7 @@ public class TestingProductPage extends Util.Settings {
 		}
 
 		Reporter.log("<br><br>END OF AUTOMATION");
+		Assert.assertTrue(result);
 	}
 	
 	private boolean isPageAvailable() {
@@ -156,19 +158,6 @@ public class TestingProductPage extends Util.Settings {
 			Reporter.log("<p style=\"color:red\">Image Not loaded</p>");
 		}
 		return HImage;
-	}
-	
-	private boolean verifyCopy(){
-		Boolean hasCopy = false;
-		try {
-			driver.findElement(By.cssSelector(Selector.SCHART));
-			hasCopy = true;
-		} catch (NoSuchElementException n) {
-			/*If the block goes to the exception, it means that the css selector is not present,
-			* therefore, the size chart is not present */
-			Reporter.log("<p style=\"color:red\">Size Chart not available</p>");
-		}
-		return hasCopy;
 	}
 
 	// Validates if the breadcrumbs are present 

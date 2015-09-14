@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -52,6 +53,12 @@ public class Settings {
 	    }catch(IOException e){
 	    }
 	    
+	}
+	
+	@AfterClass
+	public void atTheEnd(){
+		System.out.println("Ending");
+		System.exit(0);
 	}
 	
 
