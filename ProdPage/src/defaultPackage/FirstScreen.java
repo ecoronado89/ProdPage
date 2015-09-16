@@ -14,6 +14,8 @@ import javax.swing.text.StyledDocument;
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
 
+import Util.Settings;
+
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JTextPane;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -57,9 +60,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		}
 	}
 	
-	/**
-	 * Create the frame.
-	 */
+	/* Create the frame. */
 	public FirstScreen() {
 		setFont(new Font("Dialog", Font.PLAIN, 12));
 		
@@ -193,12 +194,45 @@ public class FirstScreen extends JFrame implements Runnable {
 	private void proceed(){
 		divideAndClean();
 		if(hasValidPageNumbersOnly()){
-			setGlobal();		
+			setGlobal();
 			this.dispose();
 			startTest();
+			finish();
 		}else{
 			wrongInput();
 		}
+	}
+	
+	private void finish(){
+		//After it's done, tries to open the html file
+		String url = System.getProperty("user.dir")+"/test-output/index.html";
+	    File file = new File(url);
+	    
+	    Settings.driver.close();
+	    
+	    //Waits for the reporter to finish creating the file
+	    while(!file.exists()){
+	    	//Waiting...
+	    }
+	    
+	    try {
+	    	//Open the html file
+			Desktop.getDesktop().browse(file.toURI());
+			
+		} catch (IOException e) {
+			//If it couldn't open the html file, tries to open the folder
+			System.err.println("Couldn't open file. Cause: "+e+". Opening folder.");
+			url = System.getProperty("user.dir")+"/test-output";
+		    file = new File(url);
+		    
+		    try{
+		    	Desktop.getDesktop().open(file);
+		    }catch(IOException e2){
+		    	System.err.println("Couldn't open folder. Cause: "+e2+".");
+		    }
+		}
+	    
+	    System.exit(0);
 	}
 
 	/*If the user typed words or something other than numbers and dividers(\n,',',-)
@@ -218,7 +252,7 @@ public class FirstScreen extends JFrame implements Runnable {
 	private boolean hasValidPageNumbersOnly(){
 		boolean correct = true;
 		for(String page : pages){
-			correct = (page.matches("[0-9]+")&& page.length()==5 )?true:false;
+			correct = (page.matches("[0-9]+")&& page.length() >= 5 )?true:false;
 		}
 		return correct;
 	}

@@ -1,20 +1,12 @@
 package Util;
 
 
-
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import org.junit.AfterClass;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
 public class Settings {
@@ -37,28 +29,6 @@ public class Settings {
 		//Deletes all cookies from the browser
         driver.manage().deleteAllCookies();
         
-	}
-	
-	@AfterMethod
-	public void testShutDown(){
-		
-		//After the test, it has to shutdown the driver
-		driver.close();
-		
-		String url = System.getProperty("user.dir")+"/test-output";
-	    File file = new File(url);
-	    
-	    try{
-	    	Desktop.getDesktop().open(file);
-	    }catch(IOException e){
-	    }
-	    
-	}
-	
-	@AfterClass
-	public void atTheEnd(){
-		System.out.println("Ending");
-		System.exit(0);
 	}
 	
 
