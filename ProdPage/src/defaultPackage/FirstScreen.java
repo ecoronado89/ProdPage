@@ -244,7 +244,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		lblFileName.setVisible(false);
 		lblSelectedFile.setVisible(false);
 		JOptionPane.showMessageDialog(contentPane, 
-				"Valid Page numbers only. \n Page numbers are 5 digits numbers ", 
+				"Valid Page numbers only. ", 
 				"Wrong input", JOptionPane.ERROR_MESSAGE);
 	}
 	
