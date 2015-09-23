@@ -1,16 +1,22 @@
 package defaultPackage;
 
-import org.testng.TestListenerAdapter;
-import org.testng.TestNG;
-
+import java.awt.EventQueue;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Main {
 
 	public static void main(String[] args) {
-		TestListenerAdapter tla = new TestListenerAdapter();
-		TestNG testng = new TestNG();
-		testng.setTestClasses(new Class[] { TestingProductPage.class });
-		testng.addListener(tla);
-		testng.run();
+		
+		//Deletes the old versions of the testNG results
+		try {
+			Files.deleteIfExists(Paths.get(System.getProperty("user.dir")+"\\test-output\\index.html"));
+		} catch (IOException e) {
 		}
+
+		//Starts the window
+		EventQueue.invokeLater(new FirstScreen());
+	}
+	
 }

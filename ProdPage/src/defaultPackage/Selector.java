@@ -1,8 +1,7 @@
 package defaultPackage;
 
 /* Class that holds all the Strings required to run the tests
- * and ease the access to different definitions
- */
+ * and ease the access to different definitions */
 public final class Selector {
 
 	private Selector() {

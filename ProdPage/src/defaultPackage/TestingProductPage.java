@@ -3,63 +3,56 @@ package defaultPackage;
 import java.io.IOException;
 import java.util.List;
 
-import jxl.Sheet;
-import jxl.read.biff.BiffException;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
-import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 /* Class where the tests are executed */
 public class TestingProductPage extends Util.Settings {
-
+	
 	@Test
-	public void test() throws BiffException, IOException, FileNotFoundException{
-
-		System.setOut(new PrintStream(new FileOutputStream("C:\\pdp_src\\output.txt")));
+	public void test() throws IOException, FileNotFoundException{
 		
-		Sheet sheet = HandleInput.readFile();
+		System.setOut(new PrintStream(new FileOutputStream(System.getProperty("user.dir")+"\\extra-files\\output.txt")));
 		
-		//Validates if there's a sheet
-		if (sheet != null) {
-			int rows = sheet.getRows();
-			for (int i = 0; i < rows; i++) {
-				//Gets the first product page
-				page = sheet.getCell(0, i).getContents();
-				if (page.equalsIgnoreCase("")) {
-					Reporter.log("<br>END OF AUTOMATION");
-					break;
-				} else {
-					//Gets the web page
-					driver.get("http://www.llbean.com/llb/shop/" + page);
-					mainWindowHandle = driver.getWindowHandles().iterator()
-							.next();
-					
-					Reporter.log("<br>********* Processing page: " + page
-							+ " *********");
-					
-					//Validates the page
-					if (isPageAvailable() == true) {
-						isSoldOut();
-						isProductAvailable();
-						validateSizeChart();
-						validateBreadcrum();
-						verifyImage();
-					}
-				}
+		//Sets the url to production or stage accordingly
+		String url = "http://"+ (production?"www":"ecwebs01") + ".llbean.com/llb/shop/";
+		
+		Reporter.log("<br><b>Processing from: " + url + " </b><br>");
+		
+		for (String pageNumber : productPages){
+			//Gets the web page
+			driver.get(url + pageNumber);
+			mainWindowHandle = driver.getWindowHandles().iterator()
+					.next();
+			
+			Reporter.log("<br>********* Processing page: " + pageNumber
+					+ " *********");
+			
+			//Validates the page
+			if (isPageAvailable() == true) {
+				
+				inStock();
+				isProductAvailable();
+				validateSizeChart();
+				validateBreadcrum();
+				verifyImage();
 			}
-
-		} else {
-			Reporter.log("Sheet of pages is null.");
+			
+			Reporter.log("<br>********* Page: " + pageNumber
+					+ " completed *****");
+			
 		}
-	}
 
+		Reporter.log("<br><br>END OF AUTOMATION");
+	}
+	
 	private boolean isPageAvailable() {
 		Boolean available = true;
 		String notAvailTitle = "L.L.Bean: Page Not Available";
@@ -67,7 +60,7 @@ public class TestingProductPage extends Util.Settings {
 		// looks if the page number is showing the Page Not Available title
 		if (driver.getTitle().equalsIgnoreCase(notAvailTitle)) {
 			available = false;
-			Reporter.log("<br>Page is Not Available");
+			Reporter.log("<p style=\"color:red\"> Page is Not Available</p>");
 		}
 		return available;
 	}
@@ -77,7 +70,7 @@ public class TestingProductPage extends Util.Settings {
 		try {
 			//Validates if there's a css selector with tag .ppItemUnavailable
 			driver.findElement(By.cssSelector(Selector.PROD_AVAIL));
-			Reporter.log("<br>Product is NOT available;");
+			Reporter.log("<p style=\"color:red\">Product is not available</p>");
 			prodAvailable = false;
 
 		} catch (NoSuchElementException n) {
@@ -87,8 +80,9 @@ public class TestingProductPage extends Util.Settings {
 		return prodAvailable;
 	}
 
-	private boolean isSoldOut() {
-		Boolean soldOut = true;
+	private boolean inStock() {
+		
+		Boolean inStock = true;
 		try {
 			//Gets the PriceContainer
 			WebElement priceCont = driver.findElement(By
@@ -97,15 +91,20 @@ public class TestingProductPage extends Util.Settings {
 			WebElement redPrice = priceCont.findElement(By
 					.cssSelector(Selector.SOLD_OUT));
 			//Validates if the css selector is present because the product is sold out
-			if (redPrice.getText().equalsIgnoreCase("Sold Out")) {
-				Reporter.log("<br>Page is Sold Out");
-				soldOut = false;
+			String price = redPrice.getText();
+			price = price.replaceAll("\\s", "");
+			price = price.toLowerCase();
+			System.out.println(price);
+			if (price.equals("soldout")) {
+				Reporter.log("<p style=\"color:red\">Product is Sold Out</p>");
+				inStock = false;
 			}
 		} catch (NoSuchElementException n) {
-			/*If the block goes to the exception, it means that the css selector is not present,
-			* therefore, the product is not sold out */
+			//If the block goes to the exception, it means that the css selector is not present,
+			// therefore, the product is not sold out 
 		}
-		return soldOut;
+	
+		return inStock;
 	}
 
 	//Validates if the size chart is present
@@ -117,7 +116,7 @@ public class TestingProductPage extends Util.Settings {
 		} catch (NoSuchElementException n) {
 			/*If the block goes to the exception, it means that the css selector is not present,
 			* therefore, the size chart is not present */
-			Reporter.log("<br>Size Chart Not available");
+			Reporter.log("<p style=\"color:red\">Size Chart not available</p>");
 		}
 		return sizeChart;
 
@@ -135,11 +134,11 @@ public class TestingProductPage extends Util.Settings {
 			try {
 				//If the hero image link is broken
 				if (heroImage.contains("img_not_avail")) {
-					Reporter.log("<br>Hero image is broken");
+					Reporter.log("<p style=\"color:red\">Hero image is broken</p>");
 					HImage = false;
 				}
 			} catch (NullPointerException e) {
-				Reporter.log("<br>Source not found");
+				Reporter.log("<p style=\"color:red\">Source not found</p>");
 			}
 			
 			//Obtains the alternate views
@@ -154,11 +153,11 @@ public class TestingProductPage extends Util.Settings {
 						By.xpath("id('ppAlternateViews')/div[" + alt
 								+ "]/a/img")).getAttribute("src");
 				if (AV.contains("IMG_not_avail_"))
-					Reporter.log("<br>Alternate View " + alt
-							+ " is not available");
+					Reporter.log("<p style=\"color:red\">Alternate View " + alt
+							+ " is not available</p>");
 			}
 		} catch (NoSuchElementException n) {
-			Reporter.log("<br>Image Not loaded");
+			Reporter.log("<p style=\"color:red\">Image Not loaded</p>");
 		}
 		return HImage;
 	}
@@ -172,7 +171,7 @@ public class TestingProductPage extends Util.Settings {
 		} catch (NoSuchElementException n) {
 			/*If the block goes to the exception, it means that the css selector is not present,
 			* therefore, the breadcrumbs are not present */
-			Reporter.log("<br>Breadcrumbs Not available");
+			Reporter.log("<p style=\"color:red\">Breadcrumbs Not available</p>");
 		}
 		return breadC;
 
