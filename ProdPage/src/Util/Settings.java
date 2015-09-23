@@ -27,7 +27,7 @@ public class Settings {
 		driver = new ChromeDriver(DesiredCapabilities.chrome());
 		eventFiringWebDriver = new EventFiringWebDriver (driver);
 		//Deletes all cookies from the browser
-        driver.manage().deleteAllCookies();
+		driver.manage().deleteAllCookies();
         
 	}
 	
