@@ -244,7 +244,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		lblFileName.setVisible(false);
 		lblSelectedFile.setVisible(false);
 		JOptionPane.showMessageDialog(contentPane, 
-				"Valid Page numbers only. ", 
+				"Please include Product Page numbers only. ", 
 				"Wrong input", JOptionPane.ERROR_MESSAGE);
 	}
 	
@@ -252,7 +252,8 @@ public class FirstScreen extends JFrame implements Runnable {
 	private boolean hasValidPageNumbersOnly(){
 		boolean correct = true;
 		for(String page : pages){
-			correct = (page.matches("[0-9]+")&& page.length() >= 5 )?true:false;
+			//Checks if each entered line has only numbers with the regex from 0 to 9
+			correct = correct && (page.matches("[0-9]+")&& page.length() >= 5 )?true:false;
 		}
 		return correct;
 	}
@@ -316,6 +317,7 @@ public class FirstScreen extends JFrame implements Runnable {
 			JOptionPane.showMessageDialog(contentPane, "Couldn't open file. Cause: "+e, "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		
+		//Inserts the contents of the file to the existing pane
 		try{
 			 StyledDocument document = (StyledDocument) pageNumbersPane.getDocument();
 		     document.insertString(document.getLength(), temp, null);
