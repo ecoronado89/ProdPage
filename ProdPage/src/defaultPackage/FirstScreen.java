@@ -62,6 +62,7 @@ public class FirstScreen extends JFrame implements Runnable {
 	
 	/* Create the frame. */
 	public FirstScreen() {
+		
 		setFont(new Font("Dialog", Font.PLAIN, 12));
 		
 		//Initializes the list of pages to process
@@ -208,7 +209,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		String url = System.getProperty("user.dir")+"/test-output/index.html";
 	    File file = new File(url);
 	    
-	    Settings.driver.close();
+	    Settings.driver.quit();
 	    
 	    //Waits for the reporter to finish creating the file
 	    while(!file.exists()){
