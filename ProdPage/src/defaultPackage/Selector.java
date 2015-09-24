@@ -19,6 +19,8 @@ public final class Selector {
 	public static final String SOLD_OUT = ".toOrderItemSalePriceMarkdown";
 	public static final String SCHART = ".btn_size_chart";
 	public static final String BREADC = "#breadcrumbs";
+	public static final String COPY = "#ppDetails";
+
 
 	// HTML Tags
 	public static final String LI = "li";

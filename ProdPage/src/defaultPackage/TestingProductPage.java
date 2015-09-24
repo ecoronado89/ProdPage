@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.testng.Reporter;
@@ -21,6 +22,8 @@ public class TestingProductPage extends Util.Settings {
 		
 		System.setOut(new PrintStream(new FileOutputStream(System.getProperty("user.dir")+"\\extra-files\\output.txt")));
 		
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		
 		//Sets the url to production or stage accordingly
 		String url = "http://"+ (production?"www":"ecwebs01") + ".llbean.com/llb/shop/";
 		
@@ -35,6 +38,9 @@ public class TestingProductPage extends Util.Settings {
 			Reporter.log("<br>********* Processing page: " + pageNumber
 					+ " *********");
 			
+			String result = (String) js.executeScript("return llJSP");
+			System.out.println(result);
+			
 			//Validates the page
 			if (isPageAvailable() == true) {
 				
@@ -43,6 +49,8 @@ public class TestingProductPage extends Util.Settings {
 				validateSizeChart();
 				validateBreadcrum();
 				verifyImage();
+				validateCopyExist();
+				
 			}
 			
 			Reporter.log("<br>********* Page: " + pageNumber
@@ -162,6 +170,17 @@ public class TestingProductPage extends Util.Settings {
 		return HImage;
 	}
 
+	private boolean validateCopyExist() { 
+        Boolean copy = false; 
+        try { 
+                driver.findElement(By.cssSelector(Selector.COPY)); 
+                copy = true; 
+        } catch (NoSuchElementException n) { 
+                Reporter.log("<p style=\"color:red\">Copy not found</p>");
+        } 
+        return copy; 
+    }
+	
 	// Validates if the breadcrumbs are present 
 	private boolean validateBreadcrum() {
 		Boolean breadC = false;

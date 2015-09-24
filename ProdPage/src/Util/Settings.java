@@ -28,7 +28,6 @@ public class Settings {
 		eventFiringWebDriver = new EventFiringWebDriver (driver);
 		//Deletes all cookies from the browser
 		driver.manage().deleteAllCookies();
-        
 	}
 	
 
