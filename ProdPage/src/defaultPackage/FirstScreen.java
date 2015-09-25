@@ -20,9 +20,9 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -41,7 +41,7 @@ public class FirstScreen extends JFrame implements Runnable {
 
 	private static final long serialVersionUID = 516281090191754013L;
 	private JPanel contentPane;
-	private List<String> pages;
+	private Set<String> pages;
 	private JTextPane pageNumbersPane;
 	private JLabel lblFileName;
 	private JLabel lblSelectedFile;
@@ -65,8 +65,8 @@ public class FirstScreen extends JFrame implements Runnable {
 		
 		setFont(new Font("Dialog", Font.PLAIN, 12));
 		
-		//Initializes the list of pages to process
-		pages = new ArrayList<String>();
+		//Initializes the set of pages to process
+		pages = new HashSet<String>();
 		
 		//Sets OS Look and Feel
 		try{
