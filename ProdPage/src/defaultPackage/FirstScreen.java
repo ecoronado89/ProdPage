@@ -209,7 +209,13 @@ public class FirstScreen extends JFrame implements Runnable {
 		String url = System.getProperty("user.dir")+"/test-output/index.html";
 	    File file = new File(url);
 	    
-	    Settings.driver.quit();
+	    try{
+	    	Settings.driver.quit();
+	    }catch(NullPointerException n){
+	    	JOptionPane.showMessageDialog(null, "Couldn't find chromedriver.exe");
+	    	System.out.println(n);
+	    	System.exit(1);
+	    }
 	    
 	    //Waits for the reporter to finish creating the file
 	    while(!file.exists()){

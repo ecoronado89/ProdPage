@@ -1,7 +1,12 @@
 package Util;
 
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Set;
+
+import javax.swing.JOptionPane;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -21,9 +26,18 @@ public class Settings {
 	@BeforeTest
 	public void testSetUp(){
 		
-		//Sets up the Chrome driver
-		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"\\extra-files\\chromedriver.exe");
+		try {
+			System.setOut(new PrintStream(new FileOutputStream(System.getProperty("user.dir")+"\\extra-files\\output.txt")));
+		} catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "Couldn't find output.txt");
+	    	System.out.println(e);
+	    	System.exit(1);
+		}
 		
+		//Sets up the Chrome driver
+		String url = System.getProperty("user.dir")+"\\extra-files\\chromedriver.exe";
+		System.out.println(url);
+		System.setProperty("webdriver.chrome.driver", url);
 		driver = new ChromeDriver(DesiredCapabilities.chrome());
 		eventFiringWebDriver = new EventFiringWebDriver (driver);
 		//Deletes all cookies from the browser

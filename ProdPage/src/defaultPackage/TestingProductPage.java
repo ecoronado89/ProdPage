@@ -11,16 +11,12 @@ import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 
 /* Class where the tests are executed */
 public class TestingProductPage extends Util.Settings {
 	
 	@Test
 	public void test() throws IOException, FileNotFoundException{
-		
-		System.setOut(new PrintStream(new FileOutputStream(System.getProperty("user.dir")+"\\extra-files\\output.txt")));
 		
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		
