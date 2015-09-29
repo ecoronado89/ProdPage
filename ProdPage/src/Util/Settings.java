@@ -1,7 +1,7 @@
 package Util;
 
 
-import java.util.List;
+import java.util.Set;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -15,7 +15,7 @@ public class Settings {
 	public static EventFiringWebDriver eventFiringWebDriver;
 	public static String mainWindowHandle;
 	public static String page;
-	public static List<String> productPages;
+	public static Set<String> productPages;
 	public static boolean production; //false if it's on stage
 
 	@BeforeTest
