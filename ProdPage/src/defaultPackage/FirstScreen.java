@@ -212,7 +212,8 @@ public class FirstScreen extends JFrame implements Runnable {
 	    try{
 	    	Settings.driver.quit();
 	    }catch(NullPointerException n){
-	    	JOptionPane.showMessageDialog(null, "Couldn't find chromedriver.exe");
+	    	JOptionPane.showMessageDialog(null, 
+	    			"Couldn't find chromedriver.exe", "Chromedriver error", JOptionPane.ERROR_MESSAGE);
 	    	System.out.println(n);
 	    	System.exit(1);
 	    }
