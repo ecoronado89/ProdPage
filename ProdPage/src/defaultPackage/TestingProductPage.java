@@ -28,8 +28,9 @@ public class TestingProductPage extends Util.Settings {
 		
 		Reporter.log("<br><b>Processing from: " + url + " </b><br>");
 		
+		//Gets the HP to set the cookies
 		driver.get(url+0);		
-		//Set any needed cookies (it has to be done here)
+		//Set any needed cookies (has to be after a get)
 		setCookies();
 		
 		for (String pageNumber : productPages){
