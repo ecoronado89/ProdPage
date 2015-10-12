@@ -3,7 +3,10 @@ package defaultPackage;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -25,9 +28,15 @@ public class TestingProductPage extends Util.Settings {
 		
 		Reporter.log("<br><b>Processing from: " + url + " </b><br>");
 		
+		driver.get(url+0);		
+		//Set any needed cookies (it has to be done here)
+		setCookies();
+		
 		for (String pageNumber : productPages){
+			
 			//Gets the web page
 			driver.get(url + pageNumber);
+			
 			mainWindowHandle = driver.getWindowHandles().iterator()
 					.next();
 			
@@ -56,6 +65,20 @@ public class TestingProductPage extends Util.Settings {
 
 		Reporter.log("<br><br>END OF AUTOMATION");
 	}
+	
+	private void setCookies(){
+		/* Sets the LLBSS cookie that changes
+		 * from the old PDP to the new PDP
+		 * A = old. B= new. */
+		try{
+			Cookie newPDP = new Cookie("LLBSS","B");
+			driver.manage().addCookie(newPDP);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null, "Couldn't set cookie", "Cookie not set", JOptionPane.ERROR_MESSAGE);
+			System.out.println(e);
+		}
+	}
+	
 	
 	private boolean isPageAvailable() {
 		Boolean available = true;

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -26,22 +27,23 @@ public class Settings {
 	@BeforeTest
 	public void testSetUp(){
 		
-		try {
+		/*try {
 			System.setOut(new PrintStream(new FileOutputStream(System.getProperty("user.dir")+"\\extra-files\\output.txt")));
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Couldn't find output.txt");
 	    	System.out.println(e);
 	    	System.exit(1);
-		}
+		}*/
 		
 		//Sets up the Chrome driver
 		String url = System.getProperty("user.dir")+"\\extra-files\\chromedriver.exe";
-		System.out.println(url);
 		System.setProperty("webdriver.chrome.driver", url);
+		System.out.println("Driver found in: "+System.getProperty("webdriver.chrome.driver"));
 		driver = new ChromeDriver(DesiredCapabilities.chrome());
 		eventFiringWebDriver = new EventFiringWebDriver (driver);
 		//Deletes all cookies from the browser
 		driver.manage().deleteAllCookies();
+		
 	}
 	
 
