@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.JComboBox;
 
 public class FirstScreen extends JFrame implements Runnable {
 
@@ -48,6 +49,8 @@ public class FirstScreen extends JFrame implements Runnable {
 	JButton btnTestProd;
 	JButton btnTestStage;
 	String temp = "";
+	@SuppressWarnings("rawtypes")
+	JComboBox comboBox;
 	private JLabel lblPages;
 
 	@Override
@@ -61,6 +64,7 @@ public class FirstScreen extends JFrame implements Runnable {
 	}
 	
 	/* Create the frame. */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public FirstScreen() {
 		
 		setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -78,7 +82,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		//Window definition
 		setTitle("Product Page Testing Tool");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 556, 377);
+		setBounds(100, 100, 556, 402);
 		setResizable(false);
 		
 		//Locates the window in the middle of any screen
@@ -190,9 +194,22 @@ public class FirstScreen extends JFrame implements Runnable {
 		lblPages.setBounds(22, 13, 56, 26);
 		contentPane.add(lblPages);
 		
+		JLabel lblProductPages = new JLabel("Product Pages:");
+		lblProductPages.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblProductPages.setBounds(55, 337, 121, 19);
+		contentPane.add(lblProductPages);
+		
+		String[] options = {"Old PDP","New PDP"};
+		comboBox = new JComboBox(options);
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		comboBox.setSelectedIndex(0);
+		comboBox.setBounds(191, 335, 106, 22);
+		contentPane.add(comboBox);
+		
 	}
 	
 	private void proceed(){
+		selectedPDP();
 		divideAndClean();
 		if(hasValidPageNumbersOnly()){
 			setGlobal();
@@ -202,6 +219,12 @@ public class FirstScreen extends JFrame implements Runnable {
 		}else{
 			wrongInput();
 		}
+	}
+	
+	private void selectedPDP(){
+		String value = (String)comboBox.getSelectedItem();
+		String cookie = (value.equals("Old PDP"))? "A":"B";
+		Util.Settings.llbssCookieValue = cookie;
 	}
 	
 	private void finish(){
@@ -319,7 +342,7 @@ public class FirstScreen extends JFrame implements Runnable {
 			lblSelectedFile.setVisible(true);
 			lblFileName.setVisible(true);
 			lblFileName.setText(file.getName().toString());
-			lines.forEach( s -> temp += s + "\n" );
+			lines.parallel().forEach( s -> temp += s + "\n" );
 			lines.close();
 		}catch(IOException e){
 			JOptionPane.showMessageDialog(contentPane, "Couldn't open file. Cause: "+e, "Error", JOptionPane.ERROR_MESSAGE);

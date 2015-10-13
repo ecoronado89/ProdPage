@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
@@ -22,7 +21,7 @@ public class TestingProductPage extends Util.Settings {
 		//Sets the url to production or stage accordingly
 		String url = "http://"+ (production?"www":"ecwebs01") + ".llbean.com/llb/shop/";
 		
-		Reporter.log("<br><b>Processing from: " + url + " </b><br>");
+		Reporter.log("<br><b>Processing " + productPages.size() +" pages from: " + url + " </b><br>");
 		
 		//Gets the HP to set the cookies
 		driver.get(url+0);		
@@ -68,8 +67,9 @@ public class TestingProductPage extends Util.Settings {
 		/* Sets the LLBSS cookie that changes
 		 * from the old PDP to the new PDP
 		 * A = old. B= new. */
+		System.out.println(llbssCookieValue);
 		try{
-			Cookie newPDP = new Cookie("LLBSS","B");
+			Cookie newPDP = new Cookie("LLBSS",llbssCookieValue);
 			driver.manage().addCookie(newPDP);
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null, "Couldn't set cookie", "Cookie not set", JOptionPane.ERROR_MESSAGE);
