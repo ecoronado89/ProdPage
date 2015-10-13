@@ -28,6 +28,9 @@ public class TestingProductPage extends Util.Settings {
 		//Set any needed cookies (has to be after a get)
 		setCookies();
 		
+		//Checks if the cookie is set to evaluate new or old PDP
+		PDP pdp = (llbssCookieValue=="A")? new OldPDP() : new NewPDP();
+		
 		for (String pageNumber : productPages){
 			
 			//Gets the web page
@@ -45,13 +48,12 @@ public class TestingProductPage extends Util.Settings {
 			//Validates the page
 			if (isPageAvailable() == true) {
 				
-				NewPDP newPDP = new NewPDP();
-				newPDP.inStock();
-				newPDP.isProductAvailable();
-				newPDP.validateSizeChart();
-				newPDP.validateBreadcrum();
-				newPDP.verifyImage(pageNumber);
-				newPDP.validateCopyExist();
+				pdp.inStock();
+				pdp.isProductAvailable();
+				pdp.validateSizeChart();
+				pdp.validateBreadcrum();
+				pdp.verifyImage(pageNumber);
+				pdp.validateCopyExist();
 				
 			}
 			
@@ -69,8 +71,8 @@ public class TestingProductPage extends Util.Settings {
 		 * A = old. B= new. */
 		System.out.println(llbssCookieValue);
 		try{
-			Cookie newPDP = new Cookie("LLBSS",llbssCookieValue);
-			driver.manage().addCookie(newPDP);
+			Cookie cookie = new Cookie("LLBSS",llbssCookieValue);
+			driver.manage().addCookie(cookie);
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null, "Couldn't set cookie", "Cookie not set", JOptionPane.ERROR_MESSAGE);
 			System.out.println(e);

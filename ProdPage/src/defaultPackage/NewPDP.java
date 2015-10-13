@@ -7,8 +7,9 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.testng.Reporter;
 
-public class NewPDP extends Util.Settings {
-public boolean inStock() {
+public class NewPDP extends Util.Settings implements PDP {
+
+	public boolean inStock() {
 		
 		Boolean inStock = true;
 		try {
@@ -36,7 +37,7 @@ public boolean inStock() {
 	}
 
 	//Validates if the size chart is present
-public boolean validateSizeChart() {
+	public boolean validateSizeChart() {
 		Boolean sizeChart = false;
 		try {
 			driver.findElement(By.cssSelector(Selector.NEWSCHART));
@@ -52,7 +53,7 @@ public boolean validateSizeChart() {
 	}
 	
 	// Validates if the hero image and the alternate views are being displayed
-public boolean verifyImage(String pageNumber) {
+	public boolean verifyImage(String pageNumber) {
 		Boolean HImage = true;
 		try {
 			//Obtains the src of the hero image
@@ -91,7 +92,7 @@ public boolean verifyImage(String pageNumber) {
 		return HImage;
 	}
 
-public boolean validateCopyExist() { 
+	public boolean validateCopyExist() { 
         Boolean copy = false; 
         try { 
                 driver.findElement(By.xpath(Selector.NEWCOPY)); 
@@ -103,7 +104,7 @@ public boolean validateCopyExist() {
     }
 	
 	// Validates if the breadcrumbs are present 
-public boolean validateBreadcrum() {
+	public boolean validateBreadcrum() {
 		Boolean breadC = false;
 		try {
 			driver.findElement(By.cssSelector(Selector.BREADC));
@@ -117,18 +118,18 @@ public boolean validateBreadcrum() {
 
 	}
 
-public boolean isProductAvailable() {
-	Boolean prodAvailable = true;
-	try {
-		//Validates if there's a css selector with tag .ppItemUnavailable
-		driver.findElement(By.cssSelector(Selector.PROD_AVAIL));
-		Reporter.log("<p style=\"color:red\">Product is not available</p>");
-		prodAvailable = false;
-
-	} catch (NoSuchElementException n) {
-		/*If the block goes to the exception, it means that the css selector is not present,
-		* therefore, the product is available */
+	public boolean isProductAvailable() {
+		Boolean prodAvailable = true;
+		try {
+			//Validates if there's a css selector with tag .ppItemUnavailable
+			driver.findElement(By.cssSelector(Selector.PROD_AVAIL));
+			Reporter.log("<p style=\"color:red\">Product is not available</p>");
+			prodAvailable = false;
+	
+		} catch (NoSuchElementException n) {
+			/*If the block goes to the exception, it means that the css selector is not present,
+			* therefore, the product is available */
+		}
+		return prodAvailable;
 	}
-	return prodAvailable;
-}
 }

@@ -7,7 +7,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.testng.Reporter;
 
-public class OldPDP extends Util.Settings {
+public class OldPDP extends Util.Settings implements PDP {
 
 	public boolean inStock() {
 		
@@ -52,7 +52,8 @@ public class OldPDP extends Util.Settings {
 	}
 	
 	// Validates if the hero image and the alternate views are being displayed
-	public boolean verifyImage() {
+	public boolean verifyImage(String pageNumber) {
+		
 		Boolean HImage = true;
 		try {
 			//Obtains the src of the hero image

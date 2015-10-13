@@ -1,4 +1,5 @@
-app.jsp
+Driver found in: C:\Users\anunez\git\ProdPage\ProdPage\extra-files\chromedriver.exe
+B
 
 ===============================================
 Command line suite
