@@ -18,9 +18,13 @@ public final class Selector {
 	public static final String ITM_PRICE = ".ppItemPriceContainer";
 	public static final String SOLD_OUT = ".toOrderItemSalePriceMarkdown";
 	public static final String SCHART = ".btn_size_chart";
+	public static final String NEWSCHART	= "#ppOrderItemForm-0 > div:nth-child(23) > div:nth-child(1) > div > div.form-group.display-size-chart > a";
 	public static final String BREADC = "#breadcrumbs";
 	public static final String COPY = "#ppDetails";
+	public static final String NEWCOPY = "//*[@id='pagecontent']/section[1]/div[1]/div[1]";
 
+	
+	
 
 	// HTML Tags
 	public static final String LI = "li";

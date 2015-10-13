@@ -8,7 +8,7 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import org.openqa.selenium.Cookie;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
