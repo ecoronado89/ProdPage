@@ -23,11 +23,12 @@ public class Settings {
 	public static String page;
 	public static Set<String> productPages;
 	public static boolean production; //false if it's on stage
-	public static String llbssCookieValue; //A for old PDP, B for new PDP
-
+	public static String llbssCookieValue; //A for old PDP, B for new PDP, NA for normal assignment of the cookie
+	
 	@BeforeTest
 	public void testSetUp(){
 		
+		//Prints all the messages and errors to output.txt
 		try {
 			System.setOut(new PrintStream(new FileOutputStream(System.getProperty("user.dir")+"\\extra-files\\output.txt")));
 		} catch (FileNotFoundException e) {

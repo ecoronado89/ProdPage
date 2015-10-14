@@ -36,6 +36,7 @@ public class TestingProductPage extends Util.Settings {
 			//Gets the web page
 			driver.get(url + pageNumber);
 			
+			//In case a pop-in interrupter appears, it gets ignored
 			mainWindowHandle = driver.getWindowHandles().iterator()
 					.next();
 			
@@ -43,7 +44,6 @@ public class TestingProductPage extends Util.Settings {
 					+ " *********");
 			
 			//String result = (String) js.executeScript("return llJSP");
-			//System.out.println(result);
 			
 			//Validates the page
 			if (isPageAvailable() == true) {
@@ -69,13 +69,19 @@ public class TestingProductPage extends Util.Settings {
 		/* Sets the LLBSS cookie that changes
 		 * from the old PDP to the new PDP
 		 * A = old. B= new. */
-		System.out.println(llbssCookieValue);
-		try{
-			Cookie cookie = new Cookie("LLBSS",llbssCookieValue);
-			driver.manage().addCookie(cookie);
-		}catch(Exception e){
-			JOptionPane.showMessageDialog(null, "Couldn't set cookie", "Cookie not set", JOptionPane.ERROR_MESSAGE);
-			System.out.println(e);
+		
+		/*If cookie is set to NA, it means that no cookie was forced, uses the one
+		  assigned by the page */
+		if(llbssCookieValue.equals("NA")){
+			llbssCookieValue = driver.manage().getCookieNamed("LLBSS").getValue();
+		}else{
+			try{
+				Cookie cookie = new Cookie("LLBSS",llbssCookieValue);
+				driver.manage().addCookie(cookie);
+			}catch(Exception e){
+				JOptionPane.showMessageDialog(null, "Couldn't set cookie", "Cookie not set", JOptionPane.ERROR_MESSAGE);
+				System.out.println(e);
+			}
 		}
 	}
 	

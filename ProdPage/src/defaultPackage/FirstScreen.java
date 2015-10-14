@@ -194,16 +194,17 @@ public class FirstScreen extends JFrame implements Runnable {
 		lblPages.setBounds(22, 13, 56, 26);
 		contentPane.add(lblPages);
 		
-		JLabel lblProductPages = new JLabel("Product Pages:");
+		JLabel lblProductPages = new JLabel("Type of Product Pages:");
 		lblProductPages.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblProductPages.setBounds(55, 337, 121, 19);
+		lblProductPages.setBounds(32, 337, 171, 19);
 		contentPane.add(lblProductPages);
 		
-		String[] options = {"Old PDP","New PDP"};
+		//Creates a comboBox to select the type of PDP desired
+		String[] options = {"Random","Old PDP","New PDP"};
 		comboBox = new JComboBox(options);
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		comboBox.setSelectedIndex(0);
-		comboBox.setBounds(191, 335, 106, 22);
+		comboBox.setBounds(226, 335, 133, 22);
 		contentPane.add(comboBox);
 		
 	}
@@ -223,7 +224,18 @@ public class FirstScreen extends JFrame implements Runnable {
 	
 	private void selectedPDP(){
 		String value = (String)comboBox.getSelectedItem();
-		String cookie = (value.equals("Old PDP"))? "A":"B";
+		String cookie;
+		switch(value){
+			case "Old PDP":
+				cookie = "A";
+				break;
+			case "New PDP":
+				cookie = "B";
+				break;
+			default:
+				cookie = "NA";
+				break;
+		}
 		Util.Settings.llbssCookieValue = cookie;
 	}
 	

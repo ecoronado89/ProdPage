@@ -7,6 +7,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.testng.Reporter;
 
+/*Code to check the old Product Pages*/
 public class OldPDP extends Util.Settings implements PDP {
 
 	public boolean inStock() {
