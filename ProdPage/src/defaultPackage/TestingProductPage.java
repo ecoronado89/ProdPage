@@ -21,15 +21,15 @@ public class TestingProductPage extends Util.Settings {
 		//Sets the url to production or stage accordingly
 		String url = "http://"+ (production?"www":"ecwebs01") + ".llbean.com/llb/shop/";
 		
-		Reporter.log("<br><b>Processing " + productPages.size() +" pages from: " + url + " </b><br>");
-		
 		//Gets the HP to set the cookies
 		driver.get(url+0);		
 		//Set any needed cookies (has to be after a get)
 		setCookies();
 		
 		//Checks if the cookie is set to evaluate new or old PDP
-		PDP pdp = (llbssCookieValue=="A")? new OldPDP() : new NewPDP();
+		PDP pdp = (llbssCookieValue.equals("A"))? new OldPDP() : new NewPDP();
+		
+		Reporter.log("<br><b>Processing " + productPages.size() +" pages from: " + url + " with " + pdp.getPDPType() +" </b><br>");
 		
 		for (String pageNumber : productPages){
 			
@@ -73,7 +73,7 @@ public class TestingProductPage extends Util.Settings {
 		/*If cookie is set to NA, it means that no cookie was forced, uses the one
 		  assigned by the page */
 		if(llbssCookieValue.equals("NA")){
-			llbssCookieValue = driver.manage().getCookieNamed("LLBSS").getValue();
+			llbssCookieValue = ""+driver.manage().getCookieNamed("LLBSS").getValue();
 		}else{
 			try{
 				Cookie cookie = new Cookie("LLBSS",llbssCookieValue);

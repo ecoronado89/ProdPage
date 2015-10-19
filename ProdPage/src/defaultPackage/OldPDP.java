@@ -10,6 +10,10 @@ import org.testng.Reporter;
 /*Code to check the old Product Pages*/
 public class OldPDP extends Util.Settings implements PDP {
 
+	public String getPDPType(){
+		return "Old PDP";
+	}
+	
 	public boolean inStock() {
 		
 		Boolean inStock = true;

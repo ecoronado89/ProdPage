@@ -10,6 +10,10 @@ import org.testng.Reporter;
 /*Code to check the new Product Pages*/
 public class NewPDP extends Util.Settings implements PDP {
 
+	public String getPDPType(){
+		return "New PDP";
+	}
+	
 	public boolean inStock() {
 		
 		Boolean inStock = true;
