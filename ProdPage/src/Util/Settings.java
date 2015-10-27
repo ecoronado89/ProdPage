@@ -23,7 +23,7 @@ public class Settings {
 	public static String page;
 	public static Set<String> productPages;
 	public static boolean production; //false if it's on stage
-	public static String llbssCookieValue; //A for old PDP, B for new PDP, NA for normal assignment of the cookie
+	public static String llbssCookieValue; //A for old PDP, B for new PDP, BOTH to run in both types of pdp
 	
 	@BeforeTest
 	public void testSetUp(){
