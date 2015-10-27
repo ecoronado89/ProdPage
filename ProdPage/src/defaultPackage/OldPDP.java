@@ -28,7 +28,6 @@ public class OldPDP extends Util.Settings implements PDP {
 			String price = redPrice.getText();
 			price = price.replaceAll("\\s", "");
 			price = price.toLowerCase();
-			System.out.println(price);
 			if (price.equals("soldout")) {
 				Reporter.log("<span style=\"color:red\">Product is Sold Out</span><br>");
 				inStock = false;

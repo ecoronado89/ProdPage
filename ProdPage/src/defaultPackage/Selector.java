@@ -18,7 +18,7 @@ public final class Selector {
 	public static final String ITM_PRICE = ".ppItemPriceContainer";
 	public static final String SOLD_OUT = ".toOrderItemSalePriceMarkdown";
 	public static final String SCHART = ".btn_size_chart";
-	public static final String NEWSCHART	= "//*[@id=\"ppOrderItemForm-0\"]/div[1]/div[1]/div/div[2]/a";
+	public static final String NEWSCHART	= "View Size Chart";
 	public static final String BREADC = "#breadcrumbs";
 	public static final String COPY = "#ppDetails";
 	public static final String NEWCOPY = "//*[@id='pagecontent']/section[1]/div[1]/div[1]";

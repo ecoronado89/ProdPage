@@ -28,7 +28,6 @@ public class NewPDP extends Util.Settings implements PDP {
 			String price = redPrice.getText();
 			price = price.replaceAll("\\s", "");
 			price = price.toLowerCase();
-			System.out.println(price);
 			if (price.equals("soldout")) {
 				Reporter.log("<span style=\"color:red\">Product is Sold Out</span><br>");
 				inStock = false;
@@ -45,16 +44,13 @@ public class NewPDP extends Util.Settings implements PDP {
 	public boolean validateSizeChart() {
 		Boolean sizeChart = false;
 		try {
-			driver.findElement(By.xpath(Selector.NEWSCHART));
-			System.out.println("found");
+			driver.findElement(By.partialLinkText(Selector.NEWSCHART));
 			sizeChart = true;
 		} catch (NoSuchElementException n) {
 			/*If the block goes to the exception, it means that the css selector is not present,
 			* therefore, the size chart is not present */
-			System.out.println("not found");
 			Reporter.log("<span style=\"color:red\">Size Chart not available</span><br>");
 		}
-		System.out.println(" not found");
 		return sizeChart;
 
 	}
