@@ -10,6 +10,10 @@ import org.testng.Reporter;
 /*Code to check the new Product Pages*/
 public class NewPDP extends Util.Settings implements PDP {
 
+	public String getPDPType(){
+		return "New PDP";
+	}
+	
 	public boolean inStock() {
 		
 		Boolean inStock = true;
@@ -26,7 +30,7 @@ public class NewPDP extends Util.Settings implements PDP {
 			price = price.toLowerCase();
 			System.out.println(price);
 			if (price.equals("soldout")) {
-				Reporter.log("<p style=\"color:red\">Product is Sold Out</p>");
+				Reporter.log("<span style=\"color:red\">Product is Sold Out</span><br>");
 				inStock = false;
 			}
 		} catch (NoSuchElementException n) {
@@ -41,14 +45,16 @@ public class NewPDP extends Util.Settings implements PDP {
 	public boolean validateSizeChart() {
 		Boolean sizeChart = false;
 		try {
-			driver.findElement(By.cssSelector(Selector.NEWSCHART));
-			
+			driver.findElement(By.xpath(Selector.NEWSCHART));
+			System.out.println("found");
 			sizeChart = true;
 		} catch (NoSuchElementException n) {
 			/*If the block goes to the exception, it means that the css selector is not present,
 			* therefore, the size chart is not present */
-			Reporter.log("<p style=\"color:red\">Size Chart not available</p>");
+			System.out.println("not found");
+			Reporter.log("<span style=\"color:red\">Size Chart not available</span><br>");
 		}
+		System.out.println(" not found");
 		return sizeChart;
 
 	}
@@ -65,11 +71,11 @@ public class NewPDP extends Util.Settings implements PDP {
 			try {
 				//If the hero image link is broken
 				if (heroImage.contains("img_not_avail")) {
-					Reporter.log("<p style=\"color:red\">Hero image is broken</p>");
+					Reporter.log("<span style=\"color:red\">Hero image is broken</span><br>");
 					HImage = false;
 				}
 			} catch (NullPointerException e) {
-				Reporter.log("<p style=\"color:red\">Source not found</p>");
+				Reporter.log("<span style=\"color:red\">Source not found</span><br>");
 			}
 			
 			//Obtains the alternate views
@@ -84,11 +90,11 @@ public class NewPDP extends Util.Settings implements PDP {
 						By.xpath("//*[@id='product-item-"+pageNumber+"']/article[2]/ul/li["+alt+"]/a/img")).getAttribute("src");
 				
 				if (AV.contains("IMG_not_avail_"))
-					Reporter.log("<p style=\"color:red\">Alternate View " + alt
-							+ " is not available</p>");
+					Reporter.log("<span style=\"color:red\">Alternate View " + alt
+							+ " is not available</span><br>");
 			}
 		} catch (NoSuchElementException n) {
-			Reporter.log("<p style=\"color:red\">Image Not loaded</p>");
+			Reporter.log("<span style=\"color:red\">Image Not loaded</span><br>");
 		}
 		return HImage;
 	}
@@ -99,7 +105,7 @@ public class NewPDP extends Util.Settings implements PDP {
                 driver.findElement(By.xpath(Selector.NEWCOPY)); 
                 copy = true; 
         } catch (NoSuchElementException n) { 
-                Reporter.log("<p style=\"color:red\">Copy not found</p>");
+                Reporter.log("<span style=\"color:red\">Copy not found</span><br>");
         } 
         return copy; 
     }
@@ -113,7 +119,7 @@ public class NewPDP extends Util.Settings implements PDP {
 		} catch (NoSuchElementException n) {
 			/*If the block goes to the exception, it means that the css selector is not present,
 			* therefore, the breadcrumbs are not present */
-			Reporter.log("<p style=\"color:red\">Breadcrumbs Not available</p>");
+			Reporter.log("<span style=\"color:red\">Breadcrumbs Not available</span><br>");
 		}
 		return breadC;
 
@@ -124,7 +130,7 @@ public class NewPDP extends Util.Settings implements PDP {
 		try {
 			//Validates if there's a css selector with tag .ppItemUnavailable
 			driver.findElement(By.cssSelector(Selector.PROD_AVAIL));
-			Reporter.log("<p style=\"color:red\">Product is not available</p>");
+			Reporter.log("<span style=\"color:red\">Product is not available</span><br>");
 			prodAvailable = false;
 	
 		} catch (NoSuchElementException n) {

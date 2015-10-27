@@ -1,6 +1,8 @@
 package defaultPackage;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
@@ -16,22 +18,52 @@ public class TestingProductPage extends Util.Settings {
 	@Test
 	public void test() throws IOException, FileNotFoundException{
 		
-		//JavascriptExecutor js = (JavascriptExecutor) driver;
-		
 		//Sets the url to production or stage accordingly
 		String url = "http://"+ (production?"www":"ecwebs01") + ".llbean.com/llb/shop/";
 		
-		Reporter.log("<br><b>Processing " + productPages.size() +" pages from: " + url + " </b><br>");
-		
 		//Gets the HP to set the cookies
-		driver.get(url+0);		
-		//Set any needed cookies (has to be after a get)
-		setCookies();
+		driver.get(url+0);
 		
-		//Checks if the cookie is set to evaluate new or old PDP
-		PDP pdp = (llbssCookieValue=="A")? new OldPDP() : new NewPDP();
+		//Checks if it needs to process both PDP
+		boolean bothPDP = processBothPDP();
 		
-		for (String pageNumber : productPages){
+		//Creates the PDP to be used with either old, new or both
+		PDP pdp;
+		//Creates a second set of product pages in case of have to do it for both pdp 
+		Set<String> productPages2 = new LinkedHashSet<String>();
+		
+		if(bothPDP){
+			//Fills the second set of data
+			productPages2.addAll(productPages);
+			//Starts with the old PDP
+			pdp = new OldPDP();
+			setLLBSSCookie("A");
+			
+		}else{
+			//Checks if the cookie is set to evaluate new or old PDP, and sets the cookie
+			pdp = (llbssCookieValue.equals("A"))? new OldPDP() : new NewPDP();
+			setLLBSSCookie(llbssCookieValue);
+		}
+		
+		Reporter.log("<br><b>Processing " + productPages.size() +" pages from: " + url + " with " + pdp.getPDPType() +" </b><br>");
+		
+		process(pdp,productPages,url);
+		
+		if(bothPDP){
+			//After doing oldPDP now it can start with newPDP
+			pdp = new NewPDP();
+			driver.get(url+0);
+			setLLBSSCookie("B");
+			Reporter.log("<br><b>Processing " + productPages.size() +" pages from: " + url + " with " + pdp.getPDPType() +" </b><br>");
+			process(pdp,productPages2,url);
+		}
+
+		Reporter.log("END OF AUTOMATION");
+	}
+
+	private void process(PDP pdp, Set<String> pages, String url){
+		
+		for (String pageNumber : pages){
 			
 			//Gets the web page
 			driver.get(url + pageNumber);
@@ -40,10 +72,8 @@ public class TestingProductPage extends Util.Settings {
 			mainWindowHandle = driver.getWindowHandles().iterator()
 					.next();
 			
-			Reporter.log("<br>********* Processing page: " + pageNumber
-					+ " *********");
-			
-			//String result = (String) js.executeScript("return llJSP");
+			Reporter.log("<br>********* Processing page: <a href= \" "+url + pageNumber +" \" target=\"_blank\" >" + pageNumber
+					+ "</a> *********<br>");
 			
 			//Validates the page
 			if (isPageAvailable() == true) {
@@ -57,31 +87,28 @@ public class TestingProductPage extends Util.Settings {
 				
 			}
 			
-			Reporter.log("<br>********* Page: " + pageNumber
-					+ " completed *****");
-			
+			Reporter.log("********* Page: " + pageNumber
+					+ " completed *****<br>");
 		}
-
-		Reporter.log("<br><br>END OF AUTOMATION");
 	}
 	
-	private void setCookies(){
+	
+	private boolean processBothPDP(){
 		/* Sets the LLBSS cookie that changes
 		 * from the old PDP to the new PDP
 		 * A = old. B= new. */
 		
-		/*If cookie is set to NA, it means that no cookie was forced, uses the one
-		  assigned by the page */
-		if(llbssCookieValue.equals("NA")){
-			llbssCookieValue = driver.manage().getCookieNamed("LLBSS").getValue();
-		}else{
-			try{
-				Cookie cookie = new Cookie("LLBSS",llbssCookieValue);
-				driver.manage().addCookie(cookie);
-			}catch(Exception e){
-				JOptionPane.showMessageDialog(null, "Couldn't set cookie", "Cookie not set", JOptionPane.ERROR_MESSAGE);
-				System.out.println(e);
-			}
+		/*If cookie is set to BOTH, it means that both pdp have to be processed */
+		return llbssCookieValue.equals("BOTH");
+	}
+	
+	private void setLLBSSCookie(String value){
+		try{
+			Cookie cookie = new Cookie("LLBSS",value);
+			driver.manage().addCookie(cookie);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null, "Couldn't set cookie", "Cookie not set", JOptionPane.ERROR_MESSAGE);
+			System.out.println(e);
 		}
 	}
 	
@@ -93,7 +120,7 @@ public class TestingProductPage extends Util.Settings {
 		// looks if the page number is showing the Page Not Available title
 		if (driver.getTitle().equalsIgnoreCase(notAvailTitle)) {
 			available = false;
-			Reporter.log("<p style=\"color:red\"> Page is Not Available</p>");
+			Reporter.log("<span style=\"color:red\"> Page is Not Available</span><br>");
 		}
 		return available;
 	}

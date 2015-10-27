@@ -21,7 +21,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 import java.awt.Desktop;
@@ -70,7 +70,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		setFont(new Font("Dialog", Font.PLAIN, 12));
 		
 		//Initializes the set of pages to process
-		pages = new HashSet<String>();
+		pages = new LinkedHashSet<String>();
 		
 		//Sets OS Look and Feel
 		try{
@@ -200,7 +200,7 @@ public class FirstScreen extends JFrame implements Runnable {
 		contentPane.add(lblProductPages);
 		
 		//Creates a comboBox to select the type of PDP desired
-		String[] options = {"Random","Old PDP","New PDP"};
+		String[] options = {"Both PDP","Old PDP","New PDP"};
 		comboBox = new JComboBox(options);
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		comboBox.setSelectedIndex(0);
@@ -233,7 +233,7 @@ public class FirstScreen extends JFrame implements Runnable {
 				cookie = "B";
 				break;
 			default:
-				cookie = "NA";
+				cookie = "BOTH";
 				break;
 		}
 		Util.Settings.llbssCookieValue = cookie;
