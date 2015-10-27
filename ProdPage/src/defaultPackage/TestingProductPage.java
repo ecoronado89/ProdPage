@@ -58,7 +58,7 @@ public class TestingProductPage extends Util.Settings {
 			process(pdp,productPages2,url);
 		}
 
-		Reporter.log("END OF AUTOMATION");
+		Reporter.log("<br>END OF AUTOMATION");
 	}
 
 	private void process(PDP pdp, Set<String> pages, String url){
