@@ -72,6 +72,7 @@ public class TestingProductPage extends Util.Settings {
 			mainWindowHandle = driver.getWindowHandles().iterator()
 					.next();
 			
+			//The href with target"_blank" is to show a link to the pdp and to open it on a different tab
 			Reporter.log("<br>********* Processing page: <a href= \" "+url + pageNumber +" \" target=\"_blank\" >" + pageNumber
 					+ "</a> *********<br>");
 			
@@ -87,8 +88,8 @@ public class TestingProductPage extends Util.Settings {
 				
 			}
 			
-			Reporter.log("********* Page: " + pageNumber
-					+ " completed *****<br>");
+			Reporter.log("********* Page: <a href= \" "+url + pageNumber +" \" target=\"_blank\" >" + pageNumber
+					+ "</a> completed *****<br>");
 		}
 	}
 	
